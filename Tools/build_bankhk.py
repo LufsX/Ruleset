@@ -2,7 +2,7 @@ import datetime
 import os
 
 
-def build(bankhk_sources, ruleset_dir, out_ruleset_dir):
+def build(bankhk_sources, ruleset_dir, out_ruleset_dir) -> None:
     print("[BankHK] Start building BankHK rules...")
 
     update_info = f'''#####################
@@ -50,4 +50,4 @@ def build(bankhk_sources, ruleset_dir, out_ruleset_dir):
 if __name__ == "__main__":
     import config
 
-    build(config.bankhk_sources, config.ruleset_dir, config.out_source_ruleset_dir)
+    build(config.BANKHK_SOURCES, config.RULESET_DIR, config.OUT_SOURCE_RULESET_DIR)

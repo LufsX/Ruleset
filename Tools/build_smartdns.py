@@ -2,7 +2,7 @@ import os
 import datetime
 
 
-def build(smartdns_files, ruleset_dir):
+def build(smartdns_files, ruleset_dir) -> None:
     print("[SmartDNS] Start building smartdns rules...")
 
     # 确保目标目录存在
@@ -72,4 +72,4 @@ def build(smartdns_files, ruleset_dir):
 if __name__ == "__main__":
     import config
 
-    build(config.dnsmasq_china_list, config.out_source_ruleset_dir)
+    build(config.DNSMASQ_CHINA_LIST, config.OUT_SOURCE_RULESET_DIR)

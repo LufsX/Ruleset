@@ -2,7 +2,7 @@ import os
 import datetime
 
 
-def is_domainset(content):
+def is_domainset(content) -> bool:
     lines = content.strip().split("\n")
     non_comment_lines = [line for line in lines if line and not line.startswith("#")]
 
@@ -14,7 +14,7 @@ def is_domainset(content):
     return True
 
 
-def process_domainset(content):
+def process_domainset(content) -> list[str]:
     lines = content.split("\n")
     result = []
 
@@ -31,7 +31,7 @@ def process_domainset(content):
     return result
 
 
-def process_non_domainset(content):
+def process_non_domainset(content) -> list[str]:
     lines = content.split("\n")
     result = []
 
@@ -43,7 +43,7 @@ def process_non_domainset(content):
     return result
 
 
-def build(out_ruleset_dir, out_clash_ruleset_dir):
+def build(out_ruleset_dir, out_clash_ruleset_dir) -> None:
     print("[Clash] Start processing ruleset files for Clash...")
 
     # 确保输出目录存在
@@ -72,9 +72,9 @@ def build(out_ruleset_dir, out_clash_ruleset_dir):
 #  - https://ruleset.isteed.cc/List/Source/{rule_name}.conf
 #####################
 """
-
+        domainset_flag = is_domainset(content)
         # 判断是否为 domainset 格式
-        if is_domainset(content):
+        if domainset_flag:
             # 处理 domainset 格式
             processed_rules = process_domainset(content)
         else:
@@ -88,7 +88,7 @@ def build(out_ruleset_dir, out_clash_ruleset_dir):
             f.write("\n".join(processed_rules))
             f.write("\n")
 
-        print(f"[Clash] Processed file: {filename}")
+        print(f"[Clash] Processed{' domainset' if domainset_flag else ''} file: {filename}")
         processed_count += 1
 
     print(f"[Clash] Completed processing: {processed_count} files processed")
@@ -98,4 +98,4 @@ def build(out_ruleset_dir, out_clash_ruleset_dir):
 if __name__ == "__main__":
     import config
 
-    build(config.out_source_ruleset_dir, config.out_clash_ruleset_dir)
+    build(config.OUT_SOURCE_RULESET_DIR, config.OUT_CLASH_RULESET_DIR)

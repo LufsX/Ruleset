@@ -16,7 +16,7 @@ RULE_TYPE_MAPPING = {
 }
 
 
-def is_domainset(file_path):
+def is_domainset(file_path) -> bool:
     with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
         for _ in range(10):
             try:
@@ -37,7 +37,7 @@ def is_domainset(file_path):
     return False
 
 
-def parse_conf_to_singbox(conf_path, output_path):
+def parse_conf_to_singbox(conf_path, output_path) -> bool:
 
     rules_container = {
         "domain": [],
@@ -108,7 +108,7 @@ def parse_conf_to_singbox(conf_path, output_path):
         return False
 
 
-def get_all_rule_files(dir_path):
+def get_all_rule_files(dir_path) -> list[str]:
     rule_files = []
 
     extensions = [".conf"]
@@ -119,7 +119,7 @@ def get_all_rule_files(dir_path):
     return rule_files
 
 
-def build(ruleset_dir, singbox_dir):
+def build(ruleset_dir, singbox_dir) -> None:
     os.makedirs(singbox_dir, exist_ok=True)
 
     rule_files = get_all_rule_files(ruleset_dir)
@@ -153,4 +153,4 @@ def build(ruleset_dir, singbox_dir):
 if __name__ == "__main__":
     import config
 
-    build(config.out_source_ruleset_dir, config.out_singbox_ruleset_dir)
+    build(config.OUT_SOURCE_RULESET_DIR, config.OUT_SINGBOX_RULESET_DIR)

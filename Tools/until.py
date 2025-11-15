@@ -2,7 +2,7 @@ import concurrent.futures
 import re
 
 
-def clear_comment(src_file, dest_file):
+def clear_comment(src_file, dest_file) -> None:
     with open(src_file, "r", encoding="utf-8") as src:
         lines = src.readlines()
 
@@ -22,7 +22,7 @@ def clear_comment(src_file, dest_file):
     print(f"[Util] Clearing comments for {src_file}")
 
 
-def deduplicate(src_file, dest_file):
+def deduplicate(src_file, dest_file) -> None:
     lines_seen = set()
     output_lines = []
 
@@ -44,16 +44,16 @@ def deduplicate(src_file, dest_file):
     print(f"[Util] Deduplication for {src_file}")
 
 
-def run_in_threads(functions):
+def run_in_threads(functions) -> None:
     with concurrent.futures.ThreadPoolExecutor() as executor:
         executor.map(lambda f: f(), functions)
 
 
 if __name__ == "__main__":
+    import config
     import os
-    import sys
 
-    ruleset_dir = os.path.join(os.path.abspath(os.path.dirname(sys.path[0])), "List")
+    ruleset_dir = config.RULESET_DIR
 
     for root, _, files in os.walk(ruleset_dir):
         for file in files:

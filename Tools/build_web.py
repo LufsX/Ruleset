@@ -3,7 +3,7 @@ import requests
 import datetime
 
 
-def render_markdown_to_html(md_content, github_token=None):
+def render_markdown_to_html(md_content, github_token=None) -> str | None:
     github_api_url = "https://api.github.com/markdown"
     headers = {
         "Accept": "application/vnd.github+json",
@@ -13,7 +13,7 @@ def render_markdown_to_html(md_content, github_token=None):
     if github_token:
         headers["Authorization"] = f"Bearer {github_token}"
 
-    payload = {"text": md_content}
+    payload = {"text": md_content, "mode": "gfm"}
 
     response = requests.post(github_api_url, headers=headers, json=payload)
 
@@ -25,7 +25,7 @@ def render_markdown_to_html(md_content, github_token=None):
         return None
 
 
-def convert_markdown_to_html(md_file_path, output_html_path, github_token=None):
+def convert_markdown_to_html(md_file_path, output_html_path, github_token=None) -> bool:
     with open(md_file_path, "r", encoding="utf-8") as f:
         md_content = f.read()
 
@@ -47,7 +47,7 @@ def convert_markdown_to_html(md_file_path, output_html_path, github_token=None):
     return True
 
 
-def convert_all_markdown_files(directory, github_token=None):
+def convert_all_markdown_files(directory, github_token=None) -> None:
     """Recursively convert all Markdown files to HTML in a directory and delete original MD files."""
     print("[Web] Start converting Markdown files to HTML...")
     converted_count = 0
@@ -74,7 +74,7 @@ def convert_all_markdown_files(directory, github_token=None):
     print("[Web] End converting Markdown files to HTML")
 
 
-def generate_file_tree_html(public_dir, base_url=".", rule_extensions=None):
+def generate_file_tree_html(public_dir, base_url=".", rule_extensions=None) -> str:
     """Generate HTML file tree.
 
     Args:
@@ -132,7 +132,7 @@ def generate_file_tree_html(public_dir, base_url=".", rule_extensions=None):
             print(f"Error counting rules in {filepath}: {e}")
             return 0
 
-    def scan_directory(dir_path, relative_path=""):
+    def scan_directory(dir_path, relative_path="") -> list[str]:
         items = []
         try:
             entries = sorted(os.listdir(dir_path))
@@ -176,7 +176,7 @@ def generate_file_tree_html(public_dir, base_url=".", rule_extensions=None):
         items.sort(key=lambda x: (x["type"] != "dir", x["name"]))
         return items
 
-    def get_default_expand_state(path_parts, level):
+    def get_default_expand_state(path_parts, level) -> bool:
         """
         Config: expanded
         List: level 0 expanded, level 1 collapsed
@@ -202,7 +202,7 @@ def generate_file_tree_html(public_dir, base_url=".", rule_extensions=None):
         else:
             return True
 
-    def generate_html_tree(items, level=0, path_parts=[]):
+    def generate_html_tree(items, level=0, path_parts=[]) -> list[str]:
         html_lines = []
         html_lines.append('<ul class="file-tree">')
 
@@ -256,7 +256,7 @@ def generate_file_tree_html(public_dir, base_url=".", rule_extensions=None):
 
 def build_file_list_page(
     public_dir, output_path, base_url=".", github_token=None, rule_extensions=None
-):
+) -> None:
     """Build the file list page.
 
     Args:
@@ -309,8 +309,8 @@ if __name__ == "__main__":
     import config
 
     build_file_list_page(
-        config.out_dir,
-        os.path.join(config.out_dir, "index.html"),
-        github_token=config.github_token,
-        rule_extensions=config.web_rule_extensions,
+        config.OUT_DIR,
+        os.path.join(config.OUT_DIR, "index.html"),
+        github_token=config.GITHUB_TOKEN,
+        rule_extensions=config.WEB_RULE_EXTENSIONS,
     )

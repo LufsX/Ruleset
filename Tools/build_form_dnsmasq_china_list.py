@@ -6,7 +6,7 @@ import requests
 from until import run_in_threads
 
 
-def download_and_process(name, link, out_dir):
+def download_and_process(name, link, out_dir) -> None:
     print(f"[dnsmasq] Start download and process {name}")
     content = requests.get(link).text
 
@@ -33,7 +33,7 @@ def download_and_process(name, link, out_dir):
     print(f"[dnsmasq] End downloading and processing {name}")
 
 
-def build(dnsmasq_china_list, out_dir):
+def build(dnsmasq_china_list, out_dir) -> None:
     print("[dnsmasq] Start building from dnsmasq china list…")
 
     download_functions = [
@@ -48,5 +48,4 @@ def build(dnsmasq_china_list, out_dir):
 
 if __name__ == "__main__":
     import config
-
-    build(config.dnsmasq_china_list, config.out_source_ruleset_dir)
+    build(config.DNSMASQ_CHINA_LIST, config.OUT_SOURCE_RULESET_DIR)

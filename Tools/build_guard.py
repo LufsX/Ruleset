@@ -5,7 +5,7 @@ import requests
 from until import run_in_threads
 
 
-def download_and_process(link, exclude):
+def download_and_process(link, exclude) -> list[str]:
     print(f"[Guard] Downloading and processing {link} ...")
     content = requests.get(link).text
     lines = [
@@ -16,7 +16,7 @@ def download_and_process(link, exclude):
     return lines
 
 
-def build(guard_sources, out_dir):
+def build(guard_sources, out_dir) -> None:
     print("[Guard] Start building from Guard sources…")
 
     update_info = f'''#####################
@@ -53,4 +53,4 @@ def build(guard_sources, out_dir):
 if __name__ == "__main__":
     import config
 
-    build(config.guard_sources, config.out_source_ruleset_dir)
+    build(config.GUARD_SOURCES, config.OUT_SOURCE_RULESET_DIR)

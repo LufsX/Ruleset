@@ -2,7 +2,7 @@ import os
 import datetime
 
 
-def build(out_ruleset_dir, out_surge_ruleset_dir):
+def build(out_ruleset_dir, out_surge_ruleset_dir) -> None:
     print("[Surge] Start copying surge rules...")
 
     # 确保目标目录存在
@@ -58,4 +58,4 @@ def build(out_ruleset_dir, out_surge_ruleset_dir):
 if __name__ == "__main__":
     import config
 
-    build(config.out_source_ruleset_dir, config.out_surge_ruleset_dir)
+    build(config.OUT_SOURCE_RULESET_DIR, config.OUT_SURGE_RULESET_DIR)

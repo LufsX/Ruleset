@@ -6,7 +6,7 @@ import requests
 from until import run_in_threads
 
 
-def download_and_process(link, exclude):
+def download_and_process(link, exclude) -> list[str]:
     print(f"[ChinaIP] Downloading and processing {link} ...")
     content = requests.get(link).text
     lines = [
@@ -17,7 +17,7 @@ def download_and_process(link, exclude):
     return lines
 
 
-def build(china_ip_sources, out_dir):
+def build(china_ip_sources, out_dir) -> None:
     print("[ChinaIP] Start building from China IP sources…")
 
     update_info = f'''#####################
@@ -54,7 +54,7 @@ def build(china_ip_sources, out_dir):
 
     all_lines = set()
 
-    def download_and_process_wrapper(link, exclude):
+    def download_and_process_wrapper(link, exclude) -> None:
         lines = download_and_process(link, exclude)
         all_lines.update(lines)
 
@@ -87,4 +87,4 @@ def build(china_ip_sources, out_dir):
 if __name__ == "__main__":
     import config
 
-    build(config.china_ip_sources, config.out_source_ruleset_dir)
+    build(config.CHINA_IP_SOURCES, config.OUT_SOURCE_RULESET_DIR)
