@@ -6,7 +6,7 @@
     },
     {
       "src": "/List/Clash/(Apple|AppleCDN|China|ChinaIP|DirectCustom|Game|Global|Guard|OneDrive|ProxyCustom|Streaming|StreamingSE&CDN|StreamingSE|Telegram|Unbreak|WARP).yaml",
-      "dest": "https://raw.githubusercontent.com/LufsX/Profiles/4b5a19c07e4de5872db18064c281ee9c34c747cc/List/Clash/$1.yaml"
+      "dest": "https://raw.githubusercontent.com/LufsX/Ruleset/4b5a19c07e4de5872db18064c281ee9c34c747cc/List/Clash/$1.yaml"
     },
     {
       "src": "/List/AppleCDN.conf",

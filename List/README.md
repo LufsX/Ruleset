@@ -5,17 +5,18 @@
 - `List/Source/*.conf`
   - 原始规则
 - `List/Clash/*.conf`
-  - 基于原始规则添加了对 domainset 的 Clash 格式适配
+  - 基于原始规则添加了对 domainset 的 Mihomo/Clash 格式适配
 - `List/Surge/*.conf`
-  - 直接复制原始规则的
+  - 基于原始规则仅简单去掉了注释和空行
 - `List/sing-box/*.json`
   - 基于原始规则制作的对应 sing-box 的规则格式
 - `List/smartdns/*.txt`
   - 基于 dnsmasq_china_list 和原始规则中的 Guard.conf 的 smartdns 所用的 domainset 格式
+  - 仅包含部分规则（`ChinaApple`、`ChinaDomain`、`ChinaGoogle`、`Guard` 规则）
 
 ---
 
-注意 ⚠️: 已剔除了 YAML 格式的 Clash 规则支持，最后的版本可见[该 commit](https://github.com/LufsX/Profiles/tree/4b5a19c07e4de5872db18064c281ee9c34c747cc/List/Clash)
+注意 ⚠️: 已剔除了 YAML 格式的 Clash 规则支持，最后的版本可见[该 commit](https://github.com/LufsX/Ruleset/tree/4b5a19c07e4de5872db18064c281ee9c34c747cc/List/Clash)
 
 ---
 
@@ -27,6 +28,8 @@
 - DOMAIN: 253 (0.19%)
 - DOMAIN-KEYWORD: 42 (0.03%)
 - PROCESS-NAME: 25 (0.02%)
+
+规则中仅 `ChinaIP` 和 `ChinaIPv6` 无 `no-resolve` 标记，这两个规则务必在所有规则之后，以避免不必要的 DNS 解析
 
 ## 默认配置
 
@@ -47,7 +50,7 @@
 | OneDrive.conf | OneDrive 可直连集 |
 | ProxyCustom.conf | 自用代理/补充集 |
 | Streaming.conf | 流媒体服务集 |
-| StreamingSE&CDN.conf | 港澳台流媒体服务集（不含 B 站 CDN） |
+| StreamingSE.conf | 港澳台流媒体服务集（不含 B 站 CDN） |
 | Telegram.conf | Telegram 相关 |
 | Unbreak.conf | 部分需要不间断连接的域名 |
 
@@ -61,7 +64,7 @@
 | Gamer.conf | 游戏平台 |
 | MyFin.conf | MyFin 相关 |
 | N26.conf | N26 相关 |
-| StreamingSE.conf | 流媒体服务集（含 B 站的 CDN） |
+| StreamingSE&CDN.conf | 流媒体服务集（含 B 站的 CDN） |
 | WARP.conf | Cloudflare WARP 相关 |
 | Wise.conf | Wise 相关 |
 

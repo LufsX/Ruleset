@@ -7,7 +7,14 @@
 3. 在 `MitM` 中生成并安装证书
 4. Enjoy ～
 
+## Mihomo
+
+1. 订阅远程代理：`https://api.isteed.cc/sub?target=mihomo&url=` + `你的 Mihomo 订阅地址`
+2. Enjoy ～
+
 ## Clash
+
+建议使用 Mihomo 内核系软件，不再建议使用 Clash
 
 1. 订阅远程代理：`https://api.isteed.cc/sub?target=clash&url=` + `你的 Clash 订阅地址`
 2. Enjoy ～
@@ -38,11 +45,9 @@ Surge 于 2024-04-03 的 5.21.0 (**3088**) 新增了智能策略组，若 Surge 
 
 配置使用方法：将 [Proxy Group] 中的 `https://example.com/sub` 替换为你的订阅地址
 
-## Clash
+## Mihomo
 
-Clash 仅兼容 **Premium 内核** 和 **Mihomo 内核**，目前由于 Premium 内核年久失修，建议使用 Mihomo 内核
-
-仅 Premium 内核和 Mihomo 内核才可使用 `proxy-providers` 与 `rule-providers`，本配置可搭配个人自建 API 来提取订阅中的 NodeList
+仅 Mihomo 内核和 Premium 内核才可使用 `proxy-providers` 与 `rule-providers`，本配置可搭配个人自建 API 来提取订阅中的 NodeList
 
 配置使用方法：将 `proxy-providers` 下的 `ProxyList` 中的 `https://example.com/nodelist` 替换为 `https://api.isteed.cc/sub?url=` + 你的订阅地址
 
