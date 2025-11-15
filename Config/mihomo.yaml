@@ -156,6 +156,7 @@ dns:
   default-nameserver:
     - 223.6.6.6
     - 119.29.29.29
+    - system
   enhanced-mode: fake-ip # or redir-host
 
   fake-ip-range: 198.18.0.1/16 # fake-ip 池设置
