@@ -19,12 +19,6 @@ bind-address: "*" # 绑定 IP 地址，仅作用于 allow-lan 为 true，'*'表�
 # lan-disallowed-ips: # 禁止连接的 IP 地址段，黑名单优先级高于白名单，默认值为空
 #   - 192.168.0.3/32
 
-#  find-process-mode has 3 values:always, strict, off
-#  - always, 开启，强制匹配所有进程
-#  - strict, 默认，由 mihomo 判断是否开启
-#  - off, 不匹配进程，推荐在路由器上使用此模式
-find-process-mode: strict
-
 mode: rule
 
 log-level: info # 日志等级 silent/error/warning/info/debug
@@ -52,7 +46,7 @@ external-ui-url: "https://cors.isteed.cc/https://github.com/MetaCubeX/metacubexd
 # 全局 TLS 指纹，优先低于 proxy 内的 client-fingerprint
 # 可选： "chrome","firefox","safari","ios","random","none" options.
 # Utls is currently support TLS transport in TCP/grpc/WS/HTTP for VLESS/Vmess and trojan.
-global-client-fingerprint: edge
+# global-client-fingerprint: edge
 # 统一延迟
 unified-delay: true
 # TCP 并发连接
@@ -118,37 +112,37 @@ tun:
   # exclude-package: # 排除被路由的 Android 应用包名
   # - com.android.captiveportallogin
 
-# 嗅探域名 可选配置
-sniffer:
-  enable: true
-  ## 对 redir-host 类型识别的流量进行强制嗅探
-  ## 如：Tun、Redir 和 TProxy 并 DNS 为 redir-host 皆属于
-  force-dns-mapping: true
-  ## 对所有未获取到域名的流量进行强制嗅探
-  parse-pure-ip: true
-  # 是否使用嗅探结果作为实际访问，默认 true
-  # 全局配置，优先级低于 sniffer.sniff 实际配置
-  override-destination: true
-  sniff: # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
-    QUIC:
-      ports: [443, 8443]
-    TLS:
-      ports: [443, 8443]
+# # 嗅探域名 可选配置
+# sniffer:
+#   enable: true
+#   ## 对 redir-host 类型识别的流量进行强制嗅探
+#   ## 如：Tun、Redir 和 TProxy 并 DNS 为 redir-host 皆属于
+#   force-dns-mapping: true
+#   ## 对所有未获取到域名的流量进行强制嗅探
+#   parse-pure-ip: true
+#   # 是否使用嗅探结果作为实际访问，默认 true
+#   # 全局配置，优先级低于 sniffer.sniff 实际配置
+#   override-destination: true
+#   sniff: # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
+#     QUIC:
+#       ports: [443, 8443]
+#     TLS:
+#       ports: [443, 8443]
 
-    # 默认嗅探 80
-    HTTP: # 需要嗅探的端口
-      ports: [80, 8080-8880]
-      # 可覆盖 sniffer.override-destination
-      override-destination: true
-  force-domain:
-    - +.v2ex.com
-  # skip-src-address: # 对于来源ip跳过嗅探
-  #   - 192.168.0.3/32
-  # skip-dst-address: # 对于目标ip跳过嗅探
-  #   - 192.168.0.3/32
-  ## 对嗅探结果进行跳过
-  # skip-domain:
-  #   - Mijia Cloud
+#     # 默认嗅探 80
+#     HTTP: # 需要嗅探的端口
+#       ports: [80, 8080-8880]
+#       # 可覆盖 sniffer.override-destination
+#       override-destination: true
+#   force-domain:
+#     - +.v2ex.com
+#   # skip-src-address: # 对于来源ip跳过嗅探
+#   #   - 192.168.0.3/32
+#   # skip-dst-address: # 对于目标ip跳过嗅探
+#   #   - 192.168.0.3/32
+#   ## 对嗅探结果进行跳过
+#   # skip-domain:
+#   #   - Mijia Cloud
 
 # DNS 配置
 dns:
@@ -259,7 +253,7 @@ dns:
   # 如果为true，将会按照rules的规则匹配链接方式（走代理或直连），如果有特别指定则任然以指定值为准
   # 仅当proxy-server-nameserver非空时可以开启此选项, 强烈不建议和prefer-h3一起使用
   # 此外，这三者配置中的dns服务器如果出现域名会采用default-nameserver配置项解析，也请确保正确配置default-nameserver
-  respect-rules: false
+  # respect-rules: false
 
   # DNS 主要域名配置
   # 支持 UDP，TCP，DoT，DoH，DoQ
