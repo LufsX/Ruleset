@@ -28,7 +28,8 @@ def build(guard_sources, out_dir) -> None:
 #####################
 '''
     exclude = {"", "switch.cup.com.cn", ".amazonaws.com"}
-    all_lines: set[str] = set()
+    include = {"msmp.abchina.com.cn"}
+    all_lines: set[str] = set() if not include else set(include)
 
     def download_and_process_wrapper(link, exclude):
         lines = download_and_process(link, exclude)

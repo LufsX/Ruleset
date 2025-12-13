@@ -67,6 +67,7 @@
 | StreamingSE&CDN.conf | 流媒体服务集（含 B 站的 CDN） |
 | WARP.conf | Cloudflare WARP 相关 |
 | Wise.conf | Wise 相关 |
+| AppleIntelligence.conf | Apple 智能服务，务必添加在 Apple.conf 上方 |
 
 <!-- prettier-ignore -->
 | 名称 | 用途 |
