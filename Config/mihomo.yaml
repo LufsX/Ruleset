@@ -39,9 +39,9 @@ external-controller: 127.0.0.1:9090 # RESTful API 监听地址
 
 # 配置 WEB UI 目录，使用 http://{{external-controller}}/ui 访问
 external-ui: ui
-# external-ui-name: xd
+external-ui-name: zashboard
 # 目前支持下载zip,tgz格式的压缩包
-external-ui-url: "https://cors.isteed.cc/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+external-ui-url: "https://cors.isteed.cc/https://github.com/Zephyruso/zashboard/releases/latest/download/dist-no-fonts.zip"
 
 # 全局 TLS 指纹，优先低于 proxy 内的 client-fingerprint
 # 可选： "chrome","firefox","safari","ios","random","none" options.
