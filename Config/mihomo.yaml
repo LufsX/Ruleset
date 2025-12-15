@@ -1,3 +1,8 @@
+# 本配置文件地址: https://ruleset.isteed.cc/Config/mihomo.yaml
+
+# 食用说明：
+# 将下方的 https://example.com/nodelist 替换为 你的订阅地址
+
 proxy-providers:
   ProxyList:
     url: https://example.com/nodelist
