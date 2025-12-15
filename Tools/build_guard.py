@@ -8,11 +8,13 @@ from until import run_in_threads
 def download_and_process(link, exclude) -> list[str]:
     print(f"[Guard] Downloading and processing {link} ...")
     content = requests.get(link).text
-    lines = [
-        line
-        for line in content.split("\n")
-        if line and not line.startswith("#") and line.strip() not in exclude
-    ]
+    lines = []
+    for line in content.split("\n"):
+        # 去除行内注释
+        if "#" in line:
+            line = line.split("#")[0].strip()
+        if line and line.strip() not in exclude:
+            lines.append(line.strip())
     return lines
 
 
