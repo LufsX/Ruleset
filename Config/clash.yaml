@@ -90,8 +90,10 @@ dns:
   # These nameservers are used to resolve the DNS nameserver hostnames below.
   # Specify IP addresses only
   default-nameserver:
-    - 223.6.6.6
     - 119.29.29.29
+    - 180.184.2.2
+    - 223.6.6.6
+    - system
   enhanced-mode: fake-ip # or redir-host
   fake-ip-range: 198.18.0.1/16 # Fake IP addresses pool CIDR
   # use-hosts: true # lookup hosts and return IP record
@@ -180,8 +182,9 @@ dns:
   # All DNS questions are sent directly to the nameserver, without proxies
   # involved. Clash answers the DNS question with the first result gathered.
   nameserver:
-    - 223.6.6.6
     - 119.29.29.29
+    - 180.184.2.2
+    - 223.6.6.6
     - tls://dns.pub:853 # DNS over TLS
     - tls://dns.alidns.com:853 # DNS over TLS
     # - tls://dns.rubyfish.cn:853 # DNS over TLS

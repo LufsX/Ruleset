@@ -1,3 +1,11 @@
+proxy-providers:
+  ProxyList:
+    url: https://example.com/nodelist
+    path: ./Proxy/List.yaml
+    type: http
+    interval: 86400
+    health-check: { enable: true, interval: 1800, url: http://cp.cloudflare.com/generate_204 }
+
 # port: 7890 # HTTP(S) 代理服务器端口
 # socks-port: 7891 # SOCKS5 代理端口
 mixed-port: 7767 # HTTP(S) 和 SOCKS 代理混合端口
@@ -29,7 +37,7 @@ udp: true
 
 external-controller: 127.0.0.1:9090 # RESTful API 监听地址
 # external-controller-tls: 0.0.0.0:9443 # RESTful API HTTPS 监听地址，需要配置 tls 部分配置文件
-# secret: "123456" # `Authorization:Bearer ${secret}`
+secret: "1145141919810" # `Authorization:Bearer ${secret}`
 
 # RESTful API CORS标头配置
 # external-controller-cors:
@@ -112,50 +120,52 @@ tun:
   # exclude-package: # 排除被路由的 Android 应用包名
   # - com.android.captiveportallogin
 
-# # 嗅探域名 可选配置
-# sniffer:
-#   enable: true
-#   ## 对 redir-host 类型识别的流量进行强制嗅探
-#   ## 如：Tun、Redir 和 TProxy 并 DNS 为 redir-host 皆属于
-#   force-dns-mapping: true
-#   ## 对所有未获取到域名的流量进行强制嗅探
-#   parse-pure-ip: true
-#   # 是否使用嗅探结果作为实际访问，默认 true
-#   # 全局配置，优先级低于 sniffer.sniff 实际配置
-#   override-destination: true
-#   sniff: # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
-#     QUIC:
-#       ports: [443, 8443]
-#     TLS:
-#       ports: [443, 8443]
+# 嗅探域名 可选配置
+sniffer:
+  enable: true
+  ## 对 redir-host 类型识别的流量进行强制嗅探
+  ## 如：Tun、Redir 和 TProxy 并 DNS 为 redir-host 皆属于
+  # force-dns-mapping: true
+  ## 对所有未获取到域名的流量进行强制嗅探
+  # parse-pure-ip: true
+  # 是否使用嗅探结果作为实际访问，默认 true
+  # 全局配置，优先级低于 sniffer.sniff 实际配置
+  # override-destination: true
+  sniff: # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
+    QUIC:
+      ports: [443, 8443]
+    TLS:
+      ports: [443, 8443]
 
-#     # 默认嗅探 80
-#     HTTP: # 需要嗅探的端口
-#       ports: [80, 8080-8880]
-#       # 可覆盖 sniffer.override-destination
-#       override-destination: true
-#   force-domain:
-#     - +.v2ex.com
-#   # skip-src-address: # 对于来源ip跳过嗅探
-#   #   - 192.168.0.3/32
-#   # skip-dst-address: # 对于目标ip跳过嗅探
-#   #   - 192.168.0.3/32
-#   ## 对嗅探结果进行跳过
-#   # skip-domain:
-#   #   - Mijia Cloud
+    # 默认嗅探 80
+    HTTP: # 需要嗅探的端口
+      ports: [80, 8080-8880]
+      # 可覆盖 sniffer.override-destination
+      override-destination: true
+  # force-domain:
+  #   - +.v2ex.com
+  # skip-src-address: # 对于来源ip跳过嗅探
+  #   - 192.168.0.3/32
+  # skip-dst-address: # 对于目标ip跳过嗅探
+  #   - 192.168.0.3/32
+  ## 对嗅探结果进行跳过
+  skip-domain:
+    - "Mijia Cloud"
+    - "+.push.apple.com"
 
 # DNS 配置
 dns:
   enable: true # 关闭将使用系统 DNS
-  prefer-h3: false # 是否开启 DoH 支持 HTTP/3，将并发尝试
+  # prefer-h3: false # 是否开启 DoH 支持 HTTP/3，将并发尝试
   listen: 0.0.0.0:1053 # 开启 DNS 服务器监听
   # ipv6: false # false 将返回 AAAA 的空结果
   # ipv6-timeout: 300 # 单位：ms，内部双栈并发时，向上游查询 AAAA 时，等待 AAAA 的时间，默认 100ms
   # 用于解析 nameserver，fallback 以及其他 DNS 服务器配置的，DNS 服务域名
   # 只能使用纯 IP 地址，可使用加密 DNS
   default-nameserver:
-    - 223.6.6.6
     - 119.29.29.29
+    - 180.184.2.2
+    - 223.6.6.6
     - system
   enhanced-mode: fake-ip # or redir-host
 
@@ -260,187 +270,65 @@ dns:
   # 支持 UDP，TCP，DoT，DoH，DoQ
   # 这部分为主要 DNS 配置，影响所有直连，确保使用对大陆解析精准的 DNS
   nameserver:
-    - 223.6.6.6
     - 119.29.29.29
+    - 180.184.2.2
+    - 223.6.6.6
     - tls://dns.pub:853 # DNS over TLS
     - tls://dns.alidns.com:853 # DNS over TLS
     - quic://223.6.6.6 # DNS over QUIC
     # - '8.8.8.8#RULES' # 效果同respect-rules，但仅对该服务器生效
     # - '8.8.8.8#en0' # 兼容指定 DNS 出口网卡
 
-proxies: null
+proxies:
+  - name: "𝐷𝑖𝑟𝑒𝑐𝑡"
+    type: direct
+    udp: true
+  - name: "𝑅𝑒𝑗𝑒𝑐𝑡"
+    type: reject
 
 proxy-groups:
   # 代理节点选择
-  - name: "𝑃𝑟𝑜𝑥𝑦"
-    type: select
-    proxies:
-      - 𝐴𝑢𝑡𝑜𝑡𝑒𝑠𝑡
-      - 𝐹𝑎𝑙𝑙𝑏𝑎𝑐𝑘
-    use:
-      - ProxyList
+  - { name: "𝑃𝑟𝑜𝑥𝑦", type: select, proxies: [𝐴𝑢𝑡𝑜𝑡𝑒𝑠𝑡, 𝐹𝑎𝑙𝑙𝑏𝑎𝑐𝑘], filter: "^(?!.*(𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", include-all: true }
   # 国际流媒体服务
-  - name: "𝑆𝑡𝑟𝑒𝑎𝑚𝑖𝑛𝑔"
-    type: select
-    proxies:
-      - 𝑃𝑟𝑜𝑥𝑦
-    use:
-      - ProxyList
+  - { name: "𝑆𝑡𝑟𝑒𝑎𝑚𝑖𝑛𝑔", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], filter: "^(?!.*(𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", include-all: true }
   # 中国流媒体服务（面向海外版本）
   # 用于观看部分国内流媒体面向港澳台的地区的限定内容，此处应放港澳台节点，如果没有此需求可删除此处策略组及相关规则
-  - name: "𝑆𝑡𝑟𝑒𝑎𝑚𝑖𝑛𝑔𝑆𝐸"
-    type: select
-    proxies:
-      - DIRECT
-    filter: "(?i)(h(ong)?k(ong)?|ta?i?w|macau)|澳门|港|台|🇭🇰|🇲🇴|🇹🇼"
-    use:
-      - ProxyList
+  - { name: "𝑆𝑡𝑟𝑒𝑎𝑚𝑖𝑛𝑔𝑆𝐸", type: select, proxies: [𝐷𝑖𝑟𝑒𝑐𝑡, 𝑃𝑟𝑜𝑥𝑦], filter: "(?i)(h(ong)?k(ong)?|ta?i?w|macau)|澳门|港|台|🇭🇰|🇲🇴|🇹🇼", include-all: true }
   # Telegram 即时通讯
-  - name: "𝑇𝑒𝑙𝑒𝑔𝑟𝑎𝑚"
-    type: select
-    proxies:
-      - 𝑃𝑟𝑜𝑥𝑦
-      # - 2
-    filter: "(?i)(sg|us|nl|singapore|united|netherland)|新加坡|荷兰|美国|狮城|🇸🇬|🇳🇱|🇺🇸"
-    use:
-      - ProxyList
-  - name: "𝐴𝐼"
-    type: select
-    proxies:
-      - 𝑃𝑟𝑜𝑥𝑦
-    filter: "(?i)(jp|japan|u[sk]|america|united|ta?i?w)|[美英]国|日本|台|🇺🇸|🇬🇧|🇯🇵|🇹🇼"
-    use:
-      - ProxyList
+  - { name: "𝑇𝑒𝑙𝑒𝑔𝑟𝑎𝑚", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], filter: "(?i)(sg|us|nl|singapore|united|netherland)|新加坡|荷兰|美国|狮城|🇸🇬|🇳🇱|🇺🇸", include-all: true }
+  - { name: "𝐴𝐼", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], filter: "^(?!.*(香港|h(ong)?k(ong)?|🇭🇰|𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", include-all: true }
   # Apple 服务
-  - name: "𝐴𝑝𝑝𝑙𝑒"
-    type: select
-    proxies:
-      - DIRECT
-      - 𝑃𝑟𝑜𝑥𝑦
+  - { name: "𝐴𝑝𝑝𝑙𝑒", type: select, proxies: [𝐷𝑖𝑟𝑒𝑐𝑡, 𝑃𝑟𝑜𝑥𝑦] }
   # OneDrive 网盘服务
-  - name: "𝑂𝑛𝑒𝐷𝑟𝑖𝑣𝑒"
-    type: select
-    proxies:
-      - DIRECT
-      - 𝑃𝑟𝑜𝑥𝑦
+  - { name: "𝑂𝑛𝑒𝐷𝑟𝑖𝑣𝑒", type: select, proxies: [𝐷𝑖𝑟𝑒𝑐𝑡, 𝑃𝑟𝑜𝑥𝑦] }
   # 去广告
-  - name: "𝐺𝑢𝑎𝑟𝑑"
-    type: select
-    proxies:
-      - REJECT
-      - DIRECT
-
+  - { name: "𝐺𝑢𝑎𝑟𝑑", type: select, proxies: [𝑅𝑒𝑗𝑒𝑐𝑡, 𝐷𝑖𝑟𝑒𝑐𝑡] }
   # 白名单模式 PROXY, 黑名单模式 DIRECT, 不知道的话别动
-  - name: "𝐹𝑖𝑛𝑎𝑙"
-    type: select
-    proxies:
-      - 𝑃𝑟𝑜𝑥𝑦
-      - DIRECT
-
-  - name: "𝐴𝑢𝑡𝑜𝑡𝑒𝑠𝑡"
-    type: url-test
-    lazy: true
-    use:
-      - ProxyList
-    url: "http://cp.cloudflare.com/generate_204"
-    interval: 300
-
-  - name: "𝐹𝑎𝑙𝑙𝑏𝑎𝑐𝑘"
-    type: fallback
-    lazy: true
-    use:
-      - ProxyList
-    url: "http://cp.cloudflare.com/generate_204"
-    interval: 300
-
-proxy-providers:
-  ProxyList:
-    url: https://example.com/nodelist
-    path: ./Proxy/List.yaml
-    type: http
-    interval: 86400
-    health-check:
-      enable: true
-      interval: 1800
-      url: http://cp.cloudflare.com/generate_204
+  - { name: "𝐹𝑖𝑛𝑎𝑙", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦, 𝐷𝑖𝑟𝑒𝑐𝑡] }
+  - { name: "𝐴𝑢𝑡𝑜𝑡𝑒𝑠𝑡", type: url-test, filter: "^(?!.*(𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", lazy: true, url: "http://cp.cloudflare.com/generate_204", interval: 300, include-all: true }
+  - { name: "𝐹𝑎𝑙𝑙𝑏𝑎𝑐𝑘", type: fallback, filter: "^(?!.*(𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", lazy: true, url: "http://cp.cloudflare.com/generate_204", interval: 300, include-all: true }
 
 # 配置锚点（后续好改（
-classical: &classical
-  type: http
-  format: text
-  behavior: classical
-  interval: 86400
-domain: &domain
-  type: http
-  format: text
-  behavior: domain
-  interval: 86400
+classical: &classical { type: http, format: text, behavior: classical, interval: 86400 }
+domain: &domain { type: http, format: text, behavior: domain, interval: 86400 }
 
 rule-providers:
-  Unbreak:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/Unbreak.conf
-    path: ./RuleSet/Unbreak.conf
-  Apple:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/Apple.conf
-    path: ./RuleSet/Apple.conf
-  AppleCDN:
-    <<: *domain
-    url: https://ruleset.isteed.cc/List/Clash/ChinaApple.conf
-    path: ./RuleSet/AppleCDN.conf
-  Streaming:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/Streaming.conf
-    path: ./RuleSet/Streaming.conf
-  StreamingSE:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/StreamingSE.conf
-    path: ./RuleSet/StreamingSE.conf
-  Global:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/Global.conf
-    path: ./RuleSet/Global.conf
-  Guard:
-    <<: *domain
-    url: https://ruleset.isteed.cc/List/Clash/Guard.conf
-    path: ./RuleSet/Guard.conf
-  GuardPlus:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/GuardPlus.conf
-    path: ./RuleSet/GuardPlus.conf
-  AI:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/AI.conf
-    path: ./RuleSet/AI.conf
-  China:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/China.conf
-    path: ./RuleSet/China.conf
-  ChinaIP:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/ChinaIP.conf
-    path: ./RuleSet/ChinaIP.conf
-  ChinaIPv6:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/ChinaIPv6.conf
-    path: ./RuleSet/ChinaIPv6.conf
-  Telegram:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/Telegram.conf
-    path: ./RuleSet/Telegram.conf
-  OneDrive:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/OneDrive.conf
-    path: ./RuleSet/OneDrive.conf
-  DirectCustom:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/DirectCustom.conf
-    path: ./RuleSet/DirectCustom.conf
-  ProxyCustom:
-    <<: *classical
-    url: https://ruleset.isteed.cc/List/Clash/ProxyCustom.conf
-    path: ./RuleSet/ProxyCustom.conf
+  Unbreak: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Unbreak.conf }
+  Apple: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Apple.conf }
+  AppleCDN: { <<: *domain, url: https://ruleset.isteed.cc/List/Clash/ChinaApple.conf }
+  Streaming: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Streaming.conf }
+  StreamingSE: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/StreamingSE.conf }
+  Global: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Global.conf }
+  Guard: { <<: *domain, url: https://ruleset.isteed.cc/List/Clash/Guard.conf }
+  GuardPlus: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/GuardPlus.conf }
+  AI: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/AI.conf }
+  China: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/China.conf }
+  ChinaIP: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/ChinaIP.conf }
+  ChinaIPv6: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/ChinaIPv6.conf }
+  Telegram: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Telegram.conf }
+  OneDrive: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/OneDrive.conf }
+  DirectCustom: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/DirectCustom.conf }
+  ProxyCustom: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/ProxyCustom.conf }
 
 rules:
   # Custom
