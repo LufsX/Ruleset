@@ -1,5 +1,5 @@
 import os
-import datetime
+import until
 
 
 def is_domainset(content) -> bool:
@@ -64,14 +64,7 @@ def build(out_ruleset_dir, out_clash_ruleset_dir) -> None:
 
         # 创建文件头
         rule_name = filename.replace(".conf", "")
-        update_info = f"""#####################
-# {rule_name}
-# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
-#
-# Form:
-#  - https://ruleset.isteed.cc/List/Source/{rule_name}.conf
-#####################
-"""
+        update_info = until.make_ruleset_header(rule_name)
         domainset_flag = is_domainset(content)
         # 判断是否为 domainset 格式
         if domainset_flag:

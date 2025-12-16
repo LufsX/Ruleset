@@ -1,7 +1,7 @@
-import datetime
 import os
 import requests
 
+import until
 from until import run_in_threads
 
 
@@ -21,14 +21,7 @@ def download_and_process(link, exclude) -> list[str]:
 def build(guard_sources, out_dir) -> None:
     print("[Guard] Start building from Guard sources…")
 
-    update_info = f'''#####################
-# Guard List
-# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
-#
-# Build form:
-{'\n'.join([f"#  - {link}" for link in guard_sources])}
-#####################
-'''
+    update_info = until.make_build_header("Guard List", guard_sources)
     exclude = {"", "switch.cup.com.cn", ".amazonaws.com"}
     include = {"msmp.abchina.com.cn"}
     all_lines: set[str] = set() if not include else set(include)

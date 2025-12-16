@@ -1,8 +1,8 @@
-import datetime
 import ipaddress
 import os
 import requests
 
+import until
 from until import run_in_threads
 
 
@@ -20,14 +20,7 @@ def download_and_process(link, exclude) -> list[str]:
 def build(china_ip_sources, out_dir) -> None:
     print("[ChinaIP] Start building from China IP sources…")
 
-    update_info = f'''#####################
-# China IP List
-# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
-#
-# Build form:
-{'\n'.join([f"#  - {link}" for link in china_ip_sources])}
-#####################
-'''
+    update_info = until.make_build_header("China IP List", china_ip_sources)
     exclude = {
         # From https://github.com/SukkaW/chnroutes2-optimized/blob/e0f10e1f243208f2eba4b4fb20d5050dbceed17f/index.ts#L52-L73
         # China Mobile International HK

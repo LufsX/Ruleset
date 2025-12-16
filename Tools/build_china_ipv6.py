@@ -1,8 +1,8 @@
-import datetime
 import ipaddress
 import os
 import requests
 
+import until
 from until import run_in_threads
 
 
@@ -20,14 +20,7 @@ def download_and_process(link, exclude) -> list[str]:
 def build(china_ipv6_sources, out_dir) -> None:
     print("[ChinaIPv6] Start building from China IPv6 sources…")
 
-    update_info = f'''#####################
-# China IPv6 List
-# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
-#
-# Build form:
-{'\n'.join([f"#  - {link}" for link in china_ipv6_sources])}
-#####################
-'''
+    update_info = until.make_build_header("China IPv6 List", china_ipv6_sources)
     exclude = {
         # Space
         "",

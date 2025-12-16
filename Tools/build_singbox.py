@@ -44,7 +44,6 @@ def parse_conf_to_singbox(conf_path, output_path) -> bool:
         "domain_suffix": [],
         "domain_keyword": [],
         "ip_cidr": [],
-        "ip_cidr": [],
         "source_ip_cidr": [],
         "process_name": [],
         "process_path": [],

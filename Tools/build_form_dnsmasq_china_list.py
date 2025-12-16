@@ -1,8 +1,8 @@
-import datetime
 import os
 import re
 import requests
 
+import until
 from until import run_in_threads
 
 
@@ -10,14 +10,7 @@ def download_and_process(name, link, out_dir) -> None:
     print(f"[dnsmasq] Start download and process {name}")
     content = requests.get(link).text
 
-    update_info = f"""#####################
-# {name} List
-# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
-#
-# Build form:
-#  - {link}
-#####################
-"""
+    update_info = until.make_build_header(f"{name} List", [link])
 
     pattern = r"^server=/(.*)/114\.114\.114\.114$$"
     matches = [

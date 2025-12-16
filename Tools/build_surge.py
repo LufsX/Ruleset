@@ -1,5 +1,5 @@
 import os
-import datetime
+import until
 
 
 def build(out_ruleset_dir, out_surge_ruleset_dir) -> None:
@@ -23,21 +23,14 @@ def build(out_ruleset_dir, out_surge_ruleset_dir) -> None:
             lines = f.readlines()
 
         # 过滤掉注释行并获取非空行
-        content_lines = []
-        for line in lines:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                content_lines.append(line)
+        content_lines = [
+            line.strip()
+            for line in lines
+            if line.strip() and not line.strip().startswith("#")
+        ]
 
         rule_name = filename.replace(".conf", "")
-        update_info = f"""#####################
-# {rule_name}
-# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
-#
-# Form:
-#  - https://ruleset.isteed.cc/List/Source/{rule_name}.conf
-#####################
-"""
+        update_info = until.make_ruleset_header(rule_name)
 
         # 写入目标文件
         with open(dest_file, "w", encoding="utf-8", newline="\n") as f:

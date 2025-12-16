@@ -1,6 +1,6 @@
 import os
 import requests
-import datetime
+import until
 
 
 def render_markdown_to_html(md_content, github_token=None) -> str | None:
@@ -272,9 +272,7 @@ def build_file_list_page(
     with open(template_path, "r", encoding="utf-8") as f:
         template_content = f.read()
 
-    update_time = (
-        datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)
-    ).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"
+    update_time = until.now_cn_iso8601()
 
     md_content = template_content.replace("{{UPDATE_TIME}}", update_time)
 

@@ -1,5 +1,5 @@
 import os
-import datetime
+import until
 
 
 def build(smartdns_files, ruleset_dir) -> None:
@@ -26,24 +26,9 @@ def build(smartdns_files, ruleset_dir) -> None:
             lines = f.readlines()
 
         # 获取文件头部信息
-        header_lines = []
-        for line in lines:
-            if line.strip().startswith("#"):
-                header_lines.append(line)
-            else:
-                break
-
-        if header_lines:
-            update_info = "".join(header_lines)
-        else:
-            update_info = f"""#####################
-# {rule_name}
-# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
-#
-# Form:
-#  - https://ruleset.isteed.cc/List/Source/{rule_name}.conf
-#####################
-"""
+        update_info = until.extract_leading_comment_header(lines) or until.make_ruleset_header(
+            rule_name
+        )
 
         # 获取非注释内容
         content_lines = []

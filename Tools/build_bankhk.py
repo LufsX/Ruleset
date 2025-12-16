@@ -1,19 +1,12 @@
-import datetime
 import os
+
+import until
 
 
 def build(bankhk_sources, ruleset_dir, out_ruleset_dir) -> None:
     print("[BankHK] Start building BankHK rules...")
 
-    update_info = f'''#####################
-# BankHK Ruleset
-# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
-#
-# Build form:
-{'\n'.join([f"#  - {source}" for source in bankhk_sources])}
-#####################
-
-'''
+    update_info = until.make_build_header("BankHK Ruleset", bankhk_sources) + "\n"
 
     all_rules = []
 
