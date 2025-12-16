@@ -179,9 +179,6 @@ def build(ruleset_dir, mihomo_dir) -> None:
 
         try:
             if convert_with_mihomo(tmp_path, output_path, kind):
-                until.prepend_text_to_file_binary(
-                    output_path, until.make_ruleset_header(rule_name)
-                )
                 success_count += 1
                 print(f"[mihomo] ✓ Converted: {filename} -> .mrs & .conf")
             else:
