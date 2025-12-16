@@ -6,10 +6,18 @@
 proxy-providers:
   ProxyList:
     url: https://example.com/nodelist
-    path: ./Proxy/List.yaml
+    # override: {additional-prefix: '[节点前缀] '}
     type: http
     interval: 86400
     health-check: { enable: true, interval: 1800, url: http://cp.cloudflare.com/generate_204 }
+
+  # # 若有多个订阅地址，可按如下格式添加
+  # ProxyList1:
+  #   url: https://example.com/nodelist
+  #   # override: {additional-prefix: '[节点前缀1] '}
+  #   type: http
+  #   interval: 86400
+  #   health-check: { enable: true, interval: 1800, url: http://cp.cloudflare.com/generate_204 }
 
 # port: 7890 # HTTP(S) 代理服务器端口
 # socks-port: 7891 # SOCKS5 代理端口
