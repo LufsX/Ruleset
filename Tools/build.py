@@ -102,6 +102,12 @@ def build_clash() -> None:
     build_clash.build(OUT_SOURCE_RULESET_DIR, config.OUT_CLASH_RULESET_DIR)
 
 
+def build_mrs() -> None:
+    import build_mrs
+
+    build_mrs.build(OUT_SOURCE_RULESET_DIR, config.OUT_MIHOMO_RULESET_DIR)
+
+
 def build_bankhk() -> None:
     import build_bankhk
 
@@ -151,6 +157,7 @@ until.run_in_threads(
         build_smartdns,
         build_surge,
         build_clash,
+        build_mrs,
     ]
 )
 

@@ -19,6 +19,7 @@ OUT_SINGBOX_RULESET_DIR = os.path.join(OUT_RULESET_DIR, "sing-box")
 OUT_CLASH_RULESET_DIR = os.path.join(OUT_RULESET_DIR, "Clash")
 OUT_SURGE_RULESET_DIR = os.path.join(OUT_RULESET_DIR, "Surge")
 OUT_SMARTDNS_RULESET_DIR = os.path.join(OUT_RULESET_DIR, "smartdns")
+OUT_MIHOMO_RULESET_DIR = os.path.join(OUT_RULESET_DIR, "mihomo")
 
 DNSMASQ_CHINA_LIST = {
     "ChinaDomain": "https://github.com/felixonmars/dnsmasq-china-list/raw/master/accelerated-domains.china.conf",
@@ -61,6 +62,7 @@ INIT_DIR_NAME = (
     os.path.join("List", "Source"),
     os.path.join("List", "Surge"),
     os.path.join("List", "smartdns"),
+    os.path.join("List", "mihomo"),
 )
 
 COPY_PATH = ("Config", "Mock", "Script", "Module", "vercel.json")
