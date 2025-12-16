@@ -316,24 +316,26 @@ proxy-groups:
 # 配置锚点（后续好改（
 classical: &classical { type: http, format: text, behavior: classical, interval: 86400 }
 domain: &domain { type: http, format: text, behavior: domain, interval: 86400 }
+mrs-domain: &mrs-domain { type: http, format: mrs, behavior: domain, interval: 86400 }
+mrs-ip: &mrs-ip { type: http, format: mrs, behavior: ipcidr, interval: 86400 }
 
 rule-providers:
-  Unbreak: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Unbreak.conf }
-  Apple: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Apple.conf }
-  AppleCDN: { <<: *domain, url: https://ruleset.isteed.cc/List/Clash/ChinaApple.conf }
-  Streaming: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Streaming.conf }
-  StreamingSE: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/StreamingSE.conf }
-  Global: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Global.conf }
-  Guard: { <<: *domain, url: https://ruleset.isteed.cc/List/Clash/Guard.conf }
-  GuardPlus: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/GuardPlus.conf }
-  AI: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/AI.conf }
-  China: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/China.conf }
-  ChinaIP: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/ChinaIP.conf }
-  ChinaIPv6: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/ChinaIPv6.conf }
-  Telegram: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/Telegram.conf }
-  OneDrive: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/OneDrive.conf }
-  DirectCustom: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/DirectCustom.conf }
-  ProxyCustom: { <<: *classical, url: https://ruleset.isteed.cc/List/Clash/ProxyCustom.conf }
+  Unbreak: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/Unbreak.conf }
+  Apple: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/Apple.conf }
+  AppleCDN: { <<: *domain, url: https://ruleset.isteed.cc/List/mihomo/ChinaApple.conf }
+  Streaming: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/Streaming.conf }
+  StreamingSE: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/StreamingSE.conf }
+  Global: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/Global.conf }
+  Guard: { <<: *mrs-domain, url: https://ruleset.isteed.cc/List/mihomo/Guard.mrs }
+  GuardPlus: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/GuardPlus.conf }
+  AI: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/AI.conf }
+  China: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/China.conf }
+  ChinaIP: { <<: *mrs-ip, url: https://ruleset.isteed.cc/List/mihomo/ChinaIP.mrs }
+  ChinaIPv6: { <<: *mrs-ip, url: https://ruleset.isteed.cc/List/mihomo/ChinaIPv6.mrs }
+  Telegram: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/Telegram.conf }
+  OneDrive: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/OneDrive.conf }
+  DirectCustom: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/DirectCustom.conf }
+  ProxyCustom: { <<: *classical, url: https://ruleset.isteed.cc/List/mihomo/ProxyCustom.conf }
 
 rules:
   # Custom
