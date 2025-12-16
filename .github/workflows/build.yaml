@@ -20,6 +20,17 @@ jobs:
           cache-dependency-path: "Tools/requirements.txt"
       - name: Install dependencies
         run: pip install -r Tools/requirements.txt
+      - name: Install mihomo
+        run: |
+          set -e
+          # 获取最新版本号
+          MIHOMO_VERSION=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep '"tag_name":' | sed -E 's/.*"v?([^"]+)".*/\1/')
+          # 下载并解压
+          curl -L -o mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/v${MIHOMO_VERSION}/mihomo-linux-arm64-${MIHOMO_VERSION}.gz"
+          gunzip mihomo.gz
+          chmod +x mihomo-linux-arm64
+          mkdir -p bin
+          mv mihomo-linux-arm64 bin/mihomo
       - name: Build
         run: |
           python Tools/build.py

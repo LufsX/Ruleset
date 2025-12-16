@@ -214,7 +214,22 @@ def build(ruleset_dir, mihomo_dir) -> None:
                 lines = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
             lines.sort()
             
-            # 创建临时文件
+            # 保存排序后的 .conf 文件
+            conf_path = os.path.join(mihomo_dir, filename)
+            update_info = f"""#####################
+# {rule_name}
+# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
+#
+# Form:
+#  - https://ruleset.isteed.cc/List/Source/{rule_name}.conf
+#####################
+"""
+            with open(conf_path, "w", encoding="utf-8", newline="\n") as f:
+                f.write(update_info)
+                f.write("\n".join(lines))
+                f.write("\n")
+            
+            # 创建临时文件用于转换
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", delete=False, suffix=".txt"
             ) as tmp:
@@ -225,7 +240,7 @@ def build(ruleset_dir, mihomo_dir) -> None:
                 if convert_with_mihomo(tmp_path, output_path, "domain"):
                     add_file_header(output_path, rule_name)
                     success_count += 1
-                    print(f"[mihomo] ✓ Converted domainset: {filename}")
+                    print(f"[mihomo] ✓ Converted domainset: {filename} -> .mrs & .conf")
                 else:
                     skip_count += 1
             finally:
@@ -252,7 +267,22 @@ def build(ruleset_dir, mihomo_dir) -> None:
                         lines.append(line)
             lines.sort()
             
-            # 创建临时文件
+            # 保存排序后的 .conf 文件
+            conf_path = os.path.join(mihomo_dir, filename)
+            update_info = f"""#####################
+# {rule_name}
+# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
+#
+# Form:
+#  - https://ruleset.isteed.cc/List/Source/{rule_name}.conf
+#####################
+"""
+            with open(conf_path, "w", encoding="utf-8", newline="\n") as f:
+                f.write(update_info)
+                f.write("\n".join(lines))
+                f.write("\n")
+            
+            # 创建临时文件用于转换
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", delete=False, suffix=".txt"
             ) as tmp:
@@ -263,7 +293,7 @@ def build(ruleset_dir, mihomo_dir) -> None:
                 if convert_with_mihomo(tmp_path, output_path, "ipcidr"):
                     add_file_header(output_path, rule_name)
                     success_count += 1
-                    print(f"[mihomo] ✓ Converted ipcidr: {filename}")
+                    print(f"[mihomo] ✓ Converted ipcidr: {filename} -> .mrs & .conf")
                 else:
                     skip_count += 1
             finally:
@@ -279,7 +309,23 @@ def build(ruleset_dir, mihomo_dir) -> None:
             )
             # 排序域名
             domains.sort()
-            # 创建临时文件
+            
+            # 保存排序后的 .conf 文件
+            conf_path = os.path.join(mihomo_dir, filename)
+            update_info = f"""#####################
+# {rule_name}
+# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
+#
+# Form:
+#  - https://ruleset.isteed.cc/List/Source/{rule_name}.conf
+#####################
+"""
+            with open(conf_path, "w", encoding="utf-8", newline="\n") as f:
+                f.write(update_info)
+                f.write("\n".join(domains))
+                f.write("\n")
+            
+            # 创建临时文件用于转换
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", delete=False, suffix=".txt"
             ) as tmp:
@@ -291,7 +337,7 @@ def build(ruleset_dir, mihomo_dir) -> None:
                     add_file_header(output_path, rule_name)
                     success_count += 1
                     print(
-                        f"[mihomo] ✓ Converted to domainset: {filename}"
+                        f"[mihomo] ✓ Converted to domainset: {filename} -> .mrs & .conf"
                     )
                 else:
                     skip_count += 1
@@ -307,8 +353,24 @@ def build(ruleset_dir, mihomo_dir) -> None:
             print(
                 f"[mihomo] Converting mixed IP rules to ipcidr: {filename} ({len(cidrs)} CIDRs)"
             )
-            # cidrs.sort()
-            # 创建临时文件
+            cidrs.sort()
+            
+            # 保存排序后的 .conf 文件
+            conf_path = os.path.join(mihomo_dir, filename)
+            update_info = f"""#####################
+# {rule_name}
+# Last Updated: {(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M:%S") + "+08:00"}
+#
+# Form:
+#  - https://ruleset.isteed.cc/List/Source/{rule_name}.conf
+#####################
+"""
+            with open(conf_path, "w", encoding="utf-8", newline="\n") as f:
+                f.write(update_info)
+                f.write("\n".join(cidrs))
+                f.write("\n")
+            
+            # 创建临时文件用于转换
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", delete=False, suffix=".txt"
             ) as tmp:
@@ -320,7 +382,7 @@ def build(ruleset_dir, mihomo_dir) -> None:
                     add_file_header(output_path, rule_name)
                     success_count += 1
                     print(
-                        f"[mihomo] ✓ Converted to ipcidr: {filename}"
+                        f"[mihomo] ✓ Converted to ipcidr: {filename} -> .mrs & .conf"
                     )
                 else:
                     skip_count += 1
