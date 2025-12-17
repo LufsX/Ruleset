@@ -5,7 +5,9 @@
 - `List/Source/*.conf`
   - 原始规则
 - `List/Clash/*.conf`
-  - 基于原始规则添加了对 domainset 的 Mihomo/Clash 格式适配
+  - 基于原始规则添加了对 domainset 的 Clash 格式适配
+- `List/mihomo/*.conf/.mrs`
+  - 基于原始规则添加了对 domainset 的 Mihomo 格式适配，并额外添加了 `.mrs` 格式的支持
 - `List/Surge/*.conf`
   - 基于原始规则仅简单去掉了注释和空行
 - `List/sing-box/*.json`
@@ -22,10 +24,10 @@
 
 目前（2025-11-13）所有规则及其比例如下
 
-- DOMAIN-SUFFIX: 122140 (93.10%)
-- IP-CIDR: 7303 (5.57%)
-- IP-CIDR6: 1435 (1.09%)
-- DOMAIN: 253 (0.19%)
+- DOMAIN-SUFFIX: 122580 (92.99%)
+- IP-CIDR: 7312 (5.55%)
+- IP-CIDR6: 1609 (1.22%)
+- DOMAIN: 259 (0.20%)
 - DOMAIN-KEYWORD: 42 (0.03%)
 - PROCESS-NAME: 25 (0.02%)
 
@@ -39,9 +41,9 @@
 | 名称 | 用途 |
 |:-|:-|
 | Apple.conf | Apple 相关内容服务|
-| AppleCDN.conf | Apple 相关 CDN |
 | ChatAI.conf | 部分 AI 聊天服务 |
 | China.conf | 大陆正常访问的服务 |
+| ChinaApple.conf | Apple 相关 CDN |
 | ChinaIP.conf | 大陆 IPv4 集 |
 | ChinaIPv6.conf | 大陆 IPv6 集 |
 | DirectCustom.conf | 自用直连/补充集 |
@@ -68,6 +70,8 @@
 | WARP.conf | Cloudflare WARP 相关 |
 | Wise.conf | Wise 相关 |
 | AppleIntelligence.conf | Apple 智能服务，务必添加在 Apple.conf 上方 |
+| ChinaDomain.conf | 大陆域名集，不推荐使用 |
+| ChinaGoogle.conf | 大陆可直连的 Google 服务域名集 |
 
 <!-- prettier-ignore -->
 | 名称 | 用途 |
