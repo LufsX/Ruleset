@@ -25,7 +25,7 @@ mixed-port: 7767 # HTTP(S) 和 SOCKS 代理混合端口
 redir-port: 7766 # 透明代理端口，用于 Linux 和 MacOS
 
 # Transparent proxy server port for Linux (TProxy TCP and TProxy UDP)
-tproxy-port: 1536
+tproxy-port: 7765
 
 allow-lan: true # 允许局域网连接
 bind-address: "*" # 绑定 IP 地址，仅作用于 allow-lan 为 true，'*'表示所有地址
@@ -81,7 +81,7 @@ profile: # 存储 select 选择记录
 # Tun 配置
 tun:
   enable: true
-  stack: system # gvisor/mixed
+  stack: mixed # gvisor/system/mixed
   dns-hijack:
     - any:53 # 需要劫持的 DNS
   auto-detect-interface: true # 自动识别出口网卡
@@ -118,12 +118,12 @@ tun:
   # include-uid-range: # 限制被路由的的用户范围
   # - 1000:9999
   # exclude-uid: # 排除路由的的用户
-  #- 1000
+  # - 1000
   # exclude-uid-range: # 排除路由的的用户范围
   # - 1000:9999
 
-  # Android 用户和应用规则仅在 Android 下被支持
-  # 并且需要 auto-route
+  # # Android 用户和应用规则仅在 Android 下被支持
+  # # 并且需要 auto-route
 
   # include-android-user: # 限制被路由的 Android 用户
   # - 0
@@ -145,16 +145,11 @@ sniffer:
   # 全局配置，优先级低于 sniffer.sniff 实际配置
   # override-destination: true
   sniff: # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
-    QUIC:
-      ports: [443, 8443]
-    TLS:
-      ports: [443, 8443]
+    QUIC: { ports: [443, 8443] }
+    TLS: { ports: [443, 8443] }
 
     # 默认嗅探 80
-    HTTP: # 需要嗅探的端口
-      ports: [80, 8080-8880]
-      # 可覆盖 sniffer.override-destination
-      override-destination: true
+    HTTP: { ports: [80, 8080-8880], override-destination: true } # 需要嗅探的端口，可覆盖 sniffer.override-destination
   # force-domain:
   #   - +.v2ex.com
   # skip-src-address: # 对于来源ip跳过嗅探
@@ -162,9 +157,7 @@ sniffer:
   # skip-dst-address: # 对于目标ip跳过嗅探
   #   - 192.168.0.3/32
   ## 对嗅探结果进行跳过
-  skip-domain:
-    - "Mijia Cloud"
-    - "+.push.apple.com"
+  skip-domain: ["Mijia Cloud", "+.push.apple.com"]
 
 # DNS 配置
 dns:
@@ -175,92 +168,14 @@ dns:
   # ipv6-timeout: 300 # 单位：ms，内部双栈并发时，向上游查询 AAAA 时，等待 AAAA 的时间，默认 100ms
   # 用于解析 nameserver，fallback 以及其他 DNS 服务器配置的，DNS 服务域名
   # 只能使用纯 IP 地址，可使用加密 DNS
-  default-nameserver:
-    - 119.29.29.29
-    - 180.184.2.2
-    - 223.6.6.6
-    - system
+  default-nameserver: [119.29.29.29, 180.184.2.2, 223.6.6.6, system]
   enhanced-mode: fake-ip # or redir-host
 
   fake-ip-range: 198.18.0.1/16 # fake-ip 池设置
 
   # 配置不使用 fake-ip 的域名
-  fake-ip-filter:
-    - "*.126.net"
-    - "*.ffxiv.com"
-    - "*.finalfantasyxiv.com"
-    - "*.home.arpa"
-    - "*.invalid"
-    - "*.kuwo.cn"
-    - "*.lan"
-    - "*.linksys.com"
-    - "*.linksyssmartwifi.com"
-    - "*.local"
-    - "*.localhost"
-    - "*.mcdn.bilivideo.cn"
-    - "*.msftconnecttest.com"
-    - "*.msftncsi.com"
-    - "*.music.163.com"
-    - "*.music.migu.cn"
-    - "*.ntp.org.cn"
-    - "*.router.asus.com"
-    - "*.square-enix.com"
-    - "+.battlenet.com.cn"
-    - "+.nflxvideo.net"
-    - "+.pool.ntp.org"
-    - "+.srv.nintendo.net"
-    - "+.stun.*.*"
-    - "+.stun.*.*.*"
-    - "+.stun.*.*.*.*"
-    - "+.wargaming.net"
-    - "+.wggames.cn"
-    - "+.wotgame.cn"
-    - "+.wowsgame.cn"
-    - "amobile.music.tc.qq.com"
-    - "aqqmusic.tc.qq.com"
-    - "dl.stream.qqmusic.qq.com"
-    - "heartbeat.belkin.com"
-    - "isure.stream.qqmusic.qq.com"
-    - "lens.l.google.com"
-    - "localhost.ptlogin2.qq.com"
-    - "localhost.sec.qq.com"
-    - "mesu.apple.com"
-    - "mobileoc.music.tc.qq.com"
-    - "msftconnecttest.com"
-    - "msftncsi.com"
-    - "ntp.*.*"
-    - "ntp1.*.*"
-    - "ntp2.*.*"
-    - "ntp3.*.*"
-    - "ntp4.*.*"
-    - "ntp5.*.*"
-    - "ntp6.*.*"
-    - "ntp7.*.*"
-    - "proxy.golang.org"
-    - "streamoc.music.tc.qq.com"
-    - "stun.*.*"
-    - "stun.*.*.*"
-    - "stun.l.google.com"
-    - "swcdn.apple.com"
-    - "swdist.apple.com"
-    - "swdownload.apple.com"
-    - "swquery.apple.com"
-    - "swscan.apple.com"
-    - "time.*.*"
-    - "time.*.*.*"
-    - "time.*.edu.cn"
-    - "time.*.gov"
-    - "time1.*.*"
-    - "time2.*.*"
-    - "time3.*.*"
-    - "time4.*.*"
-    - "time5.*.*"
-    - "time6.*.*"
-    - "time7.*.*"
-    - "time8.*.*"
-    - "time9.*.*"
-    - "xbox.*.microsoft.com"
-    - "xnotify.xboxlive.com"
+  # prettier-ignore
+  fake-ip-filter: ["*.126.net", "*.ffxiv.com", "*.finalfantasyxiv.com", "*.home.arpa", "*.invalid", "*.kuwo.cn", "*.lan", "*.linksys.com", "*.linksyssmartwifi.com", "*.local", "*.localhost", "*.mcdn.bilivideo.cn", "*.msftconnecttest.com", "*.msftncsi.com", "*.music.163.com", "*.music.migu.cn", "*.ntp.org.cn", "*.router.asus.com", "*.square-enix.com", "+.battlenet.com.cn", "+.nflxvideo.net", "+.pool.ntp.org", "+.srv.nintendo.net", "+.stun.*.*", "+.stun.*.*.*", "+.stun.*.*.*.*", "+.wargaming.net", "+.wggames.cn", "+.wotgame.cn", "+.wowsgame.cn", "amobile.music.tc.qq.com", "aqqmusic.tc.qq.com", "dl.stream.qqmusic.qq.com", "heartbeat.belkin.com", "isure.stream.qqmusic.qq.com", "lens.l.google.com", "localhost.ptlogin2.qq.com", "localhost.sec.qq.com", "mesu.apple.com", "mobileoc.music.tc.qq.com", "msftconnecttest.com", "msftncsi.com", "ntp.*.*", "ntp1.*.*", "ntp2.*.*", "ntp3.*.*", "ntp4.*.*", "ntp5.*.*", "ntp6.*.*", "ntp7.*.*", "proxy.golang.org", "streamoc.music.tc.qq.com", "stun.*.*", "stun.*.*.*", "stun.l.google.com", "swcdn.apple.com", "swdist.apple.com", "swdownload.apple.com", "swquery.apple.com", "swscan.apple.com", "time.*.*", "time.*.*.*", "time.*.edu.cn", "time.*.gov", "time1.*.*", "time2.*.*", "time3.*.*", "time4.*.*", "time5.*.*", "time6.*.*", "time7.*.*", "time8.*.*", "time9.*.*", "xbox.*.microsoft.com", "xnotify.xboxlive.com"]
     # fakeip-filter 为 rule-providers 中的名为 fakeip-filter 规则订阅，
     # 且 behavior 必须为 domain/classical，当为 classical 时仅会生效域名类规则
     # - rule-set:fakeip-filter
@@ -282,34 +197,23 @@ dns:
   # DNS 主要域名配置
   # 支持 UDP，TCP，DoT，DoH，DoQ
   # 这部分为主要 DNS 配置，影响所有直连，确保使用对大陆解析精准的 DNS
-  nameserver:
-    - 119.29.29.29
-    - 180.184.2.2
-    - 223.6.6.6
-    - tls://dns.pub:853 # DNS over TLS
-    - tls://dns.alidns.com:853 # DNS over TLS
-    - quic://223.6.6.6 # DNS over QUIC
-    # - '8.8.8.8#RULES' # 效果同respect-rules，但仅对该服务器生效
-    # - '8.8.8.8#en0' # 兼容指定 DNS 出口网卡
+  nameserver: [119.29.29.29, 180.184.2.2, 223.6.6.6, tls://dns.pub:853, tls://dns.alidns.com:853, quic://223.6.6.6]
 
 proxies:
-  - name: "𝐷𝑖𝑟𝑒𝑐𝑡"
-    type: direct
-    udp: true
-  - name: "𝑅𝑒𝑗𝑒𝑐𝑡"
-    type: reject
+  - { name: "𝐷𝑖𝑟𝑒𝑐𝑡", type: direct, udp: true }
+  - { name: "𝑅𝑒𝑗𝑒𝑐𝑡", type: reject }
 
 proxy-groups:
   # 代理节点选择
-  - { name: "𝑃𝑟𝑜𝑥𝑦", type: select, proxies: [𝐴𝑢𝑡𝑜𝑡𝑒𝑠𝑡, 𝐹𝑎𝑙𝑙𝑏𝑎𝑐𝑘], filter: "^(?!.*(𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", include-all: true }
+  - { name: "𝑃𝑟𝑜𝑥𝑦", type: select, proxies: [𝐴𝑢𝑡𝑜𝑡𝑒𝑠𝑡, 𝐹𝑎𝑙𝑙𝑏𝑎𝑐𝑘], include-all-providers: true }
   # 国际流媒体服务
-  - { name: "𝑆𝑡𝑟𝑒𝑎𝑚𝑖𝑛𝑔", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], filter: "^(?!.*(𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", include-all: true }
+  - { name: "𝑆𝑡𝑟𝑒𝑎𝑚𝑖𝑛𝑔", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], include-all-providers: true }
   # 中国流媒体服务（面向海外版本）
   # 用于观看部分国内流媒体面向港澳台的地区的限定内容，此处应放港澳台节点，如果没有此需求可删除此处策略组及相关规则
-  - { name: "𝑆𝑡𝑟𝑒𝑎𝑚𝑖𝑛𝑔𝑆𝐸", type: select, proxies: [𝐷𝑖𝑟𝑒𝑐𝑡, 𝑃𝑟𝑜𝑥𝑦], filter: "(?i)(h(ong)?k(ong)?|ta?i?w|macau)|澳门|港|台|🇭🇰|🇲🇴|🇹🇼", include-all: true }
+  - { name: "𝑆𝑡𝑟𝑒𝑎𝑚𝑖𝑛𝑔𝑆𝐸", type: select, proxies: [𝐷𝑖𝑟𝑒𝑐𝑡, 𝑃𝑟𝑜𝑥𝑦], include-all-providers: true, filter: "(?i)(h(ong)?k(ong)?|ta?i?w|macau)|澳门|港|台|🇭🇰|🇲🇴|🇹🇼" }
   # Telegram 即时通讯
-  - { name: "𝑇𝑒𝑙𝑒𝑔𝑟𝑎𝑚", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], filter: "(?i)(sg|us|nl|singapore|united|netherland)|新加坡|荷兰|美国|狮城|🇸🇬|🇳🇱|🇺🇸", include-all: true }
-  - { name: "𝐴𝐼", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], filter: "^(?!.*(香港|h(ong)?k(ong)?|🇭🇰|𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", include-all: true }
+  - { name: "𝑇𝑒𝑙𝑒𝑔𝑟𝑎𝑚", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], include-all-providers: true, filter: "(?i)(sg|us|nl|singapore|united|netherland)|新加坡|荷兰|美国|狮城|🇸🇬|🇳🇱|🇺🇸" }
+  - { name: "𝐴𝐼", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], include-all-providers: true, filter: "^(?!.*(香港|h(ong)?k(ong)?|🇭🇰|𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))" }
   # Apple 服务
   - { name: "𝐴𝑝𝑝𝑙𝑒", type: select, proxies: [𝐷𝑖𝑟𝑒𝑐𝑡, 𝑃𝑟𝑜𝑥𝑦] }
   # OneDrive 网盘服务
@@ -318,8 +222,8 @@ proxy-groups:
   - { name: "𝐺𝑢𝑎𝑟𝑑", type: select, proxies: [𝑅𝑒𝑗𝑒𝑐𝑡, 𝐷𝑖𝑟𝑒𝑐𝑡] }
   # 白名单模式 PROXY, 黑名单模式 DIRECT, 不知道的话别动
   - { name: "𝐹𝑖𝑛𝑎𝑙", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦, 𝐷𝑖𝑟𝑒𝑐𝑡] }
-  - { name: "𝐴𝑢𝑡𝑜𝑡𝑒𝑠𝑡", type: url-test, filter: "^(?!.*(𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", lazy: true, url: "http://cp.cloudflare.com/generate_204", interval: 300, include-all: true }
-  - { name: "𝐹𝑎𝑙𝑙𝑏𝑎𝑐𝑘", type: fallback, filter: "^(?!.*(𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))", lazy: true, url: "http://cp.cloudflare.com/generate_204", interval: 300, include-all: true }
+  - { name: "𝐴𝑢𝑡𝑜𝑡𝑒𝑠𝑡", type: url-test, lazy: true, url: "http://cp.cloudflare.com/generate_204", interval: 300, include-all-providers: true }
+  - { name: "𝐹𝑎𝑙𝑙𝑏𝑎𝑐𝑘", type: fallback, lazy: true, url: "http://cp.cloudflare.com/generate_204", interval: 300, include-all-providers: true }
 
 # 配置锚点（后续好改（
 classical: &classical { type: http, format: text, behavior: classical, interval: 86400 }
