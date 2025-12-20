@@ -1,63 +1,20 @@
 # 懒人版食用说明
 
-TO-DO: 更新 MIHOMO 和 Clash 相关说明
-
-## Surge
-
-1. 订阅远程代理：`https://api.isteed.cc/sub?target=surge&url=` + `你的 Surge 订阅地址`
-2. 打开 `首页` - `修改` 中的 `MitM`、`Rewrite` 和 `脚本`
-3. 在 `MitM` 中生成并安装证书
-4. Enjoy ～
-
-## Mihomo
-
-1. 订阅远程代理：`https://api.isteed.cc/sub?target=mihomo&url=` + `你的 Mihomo 订阅地址`
-2. Enjoy ～
-
-## Clash
-
-建议使用 Mihomo 内核系软件，不再建议使用 Clash
-
-配置文件**已弃用**
-
-1. 订阅远程代理：`https://api.isteed.cc/sub?target=clash&url=` + `你的 Clash 订阅地址`
-2. Enjoy ～
-
-# 进阶使用说明
-
-带 `target` 参数既生成对应的配置文件，不带则只生成 NodeList
-
-以及组合订阅方法（可兼容超过三个的订阅）
-
-```
-https://api.isteed.cc/sub?url=[你的第一个订阅链接]|[你的第二个订阅链接]&name=[第一个订阅链接的显示名]|[第二个订阅链接的显示名]&target=[目标配置]
-```
+前往 [api.isteed.cc/sub/config](https://api.isteed.cc/sub/config) 生成即可，支持多订阅配置
 
 # 手动版食用说明
 
-## Surge
+## Clash
 
-Surge 于 2024-04-03 的 5.21.0 (**3088**) 新增了智能策略组，若 Surge 低于此版本，请使用 [Autotest 兼容配置](https://ruleset.isteed.cc/Config/surge-autotest.conf)
-
----
-
-[Surge 配置](https://ruleset.isteed.cc/Config/surge.conf)要求较新版本的 Surge（iOS **4.13.0** 或 Mac **4.5.2** 以上）
-
-这个版本更新了以下功能，本配置中用于处理订阅链接
-
-- `You can now use a full profile as the external policy group (policy-path). All proxies in the [Proxy] section will be used.`
-
-配置使用方法：将 [Proxy Group] 中的 `https://example.com/sub` 替换为你的订阅地址
+已不再推荐使用，配置文件**已弃用**
 
 ## Mihomo
 
-Mihomo 内核可使用 `proxy-providers` 与 `rule-providers`，~~本配置可搭配个人自建 API 来提取订阅中的 NodeList~~ Mihomo 官方已支持直接使用订阅链接
+将 [Config/mihomo.yaml](https://ruleset.isteed.cc/Config/mihomo.yaml) 下载至本地，按照注释说明编辑 `https://example.com/nodelist` 填入对应订阅链接即可
 
-~~配置使用方法：将 `proxy-providers` 下的 `ProxyList` 中的 `https://example.com/nodelist` 替换为 `https://api.isteed.cc/sub?url=` + 你的订阅地址~~
+## Surge
 
-~~例如你的订阅地址为 `https://example.com/api/v1/client/subscribe?token=1145141919810`~~
-
-~~那就将配置文件中的 `https://example.com/nodelist` 替换为 `https://api.isteed.cc/sub?url=https://example.com/api/v1/client/subscribe?token=1145141919810` 即可~~
+将 [Config/surge.conf](https://ruleset.isteed.cc/Config/surge.conf) 下载至本地，按照注释说明编辑 `https://example.com/sub` 填入对应订阅链接即可
 
 # 策略组说明
 

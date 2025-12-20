@@ -1,11 +1,11 @@
 # 本配置文件地址: https://ruleset.isteed.cc/Config/mihomo.yaml
 
 # 食用说明：
-# 将下方的 https://example.com/nodelist 替换为 你的订阅地址
+# 将下方的 https://example.com/sub 替换为 你的订阅地址
 
 proxy-providers:
   ProxyList:
-    url: https://example.com/nodelist
+    url: https://example.com/sub
     # override: {additional-prefix: '[节点前缀] '}
     type: http
     interval: 86400
@@ -13,7 +13,7 @@ proxy-providers:
 
   # # 若有多个订阅地址，可按如下格式添加
   # ProxyList1:
-  #   url: https://example.com/nodelist
+  #   url: https://example.com/sub
   #   # override: {additional-prefix: '[节点前缀1] '}
   #   type: http
   #   interval: 86400
