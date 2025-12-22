@@ -45,8 +45,8 @@ mode: rule
 log-level: info # 日志等级 silent/error/warning/info/debug
 
 ipv6: true # 开启 IPv6 总开关，关闭阻断所有 IPv6 链接和屏蔽 DNS 请求 AAAA 记录
-# UDP 支持
-udp: true
+udp: true # UDP 支持
+keep-alive-interval: 1800 # 缓解保持唤醒问题
 
 external-controller: 127.0.0.1:9090 # RESTful API 监听地址
 # external-controller-tls: 0.0.0.0:9443 # RESTful API HTTPS 监听地址，需要配置 tls 部分配置文件
@@ -213,7 +213,7 @@ proxy-groups:
   - { name: "𝑆𝑡𝑟𝑒𝑎𝑚𝑖𝑛𝑔𝑆𝐸", type: select, proxies: [𝐷𝑖𝑟𝑒𝑐𝑡, 𝑃𝑟𝑜𝑥𝑦], include-all-providers: true, filter: "(?i)(h(ong)?k(ong)?|ta?i?w|macau)|澳门|港|台|🇭🇰|🇲🇴|🇹🇼" }
   # Telegram 即时通讯
   - { name: "𝑇𝑒𝑙𝑒𝑔𝑟𝑎𝑚", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], include-all-providers: true, filter: "(?i)(sg|us|nl|singapore|united|netherland)|新加坡|荷兰|美国|狮城|🇸🇬|🇳🇱|🇺🇸" }
-  - { name: "𝐴𝐼", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], include-all-providers: true, filter: "^(?!.*(香港|h(ong)?k(ong)?|🇭🇰|𝐷𝑖𝑟𝑒𝑐𝑡|𝑅𝑒𝑗𝑒𝑐𝑡))" }
+  - { name: "𝐴𝐼", type: select, proxies: [𝑃𝑟𝑜𝑥𝑦], include-all-providers: true, exclude-filter: "(?i)(h(ong)?k(ong)?)|港|🇭🇰" }
   # Apple 服务
   - { name: "𝐴𝑝𝑝𝑙𝑒", type: select, proxies: [𝐷𝑖𝑟𝑒𝑐𝑡, 𝑃𝑟𝑜𝑥𝑦] }
   # OneDrive 网盘服务
