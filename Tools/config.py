@@ -81,6 +81,9 @@ CONFIG_FILE_CLEAR = {
     os.path.join(OUT_DIR, "Config", "mihomo.yaml"): os.path.join(
         OUT_DIR, "Config", "mihomo-nocomment.yaml"
     ),
+    os.path.join(OUT_DIR, "Config", "mihomo-smart.yaml"): os.path.join(
+        OUT_DIR, "Config", "mihomo-smart-nocomment.yaml"
+    ),
 }
 
 SMARTDNS_FILE = {
