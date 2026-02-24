@@ -15,6 +15,8 @@ def download_and_process(link, exclude) -> list[str]:
             line = line.split("#")[0].strip()
         if line and line.strip() not in exclude:
             lines.append(line.strip())
+        # 替换不可见字符
+        line = line.replace("\u200b", "").replace("\u200c", "")
     return lines
 
 
