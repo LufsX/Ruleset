@@ -10,9 +10,9 @@ def download_and_process(link, exclude) -> list[str]:
     print(f"[ChinaIP] Downloading and processing {link} ...")
     content = requests.get(link).text
     lines = [
-        line
-        for line in content.split("\n")
-        if line and not line.startswith("#") and line.strip() not in exclude
+        processed
+        for line in content.splitlines()  # splitlines 处理换行符更通用
+        if (processed := line.split("#", 1)[0].strip()) and processed not in exclude
     ]
     return lines
 
@@ -21,7 +21,7 @@ def build(china_ip_sources, out_dir) -> None:
     print("[ChinaIP] Start building from China IP sources…")
 
     update_info = until.make_build_header("China IP List", china_ip_sources)
-    exclude = {
+    exclude = (
         # From https://github.com/SukkaW/chnroutes2-optimized/blob/e0f10e1f243208f2eba4b4fb20d5050dbceed17f/index.ts#L52-L73
         # China Mobile International HK
         # https://github.com/misakaio/chnroutes2/issues/25
@@ -43,7 +43,7 @@ def build(china_ip_sources, out_dir) -> None:
         "45.199.167.0/24",
         # Space
         "",
-    }
+    )
 
     all_lines = set()
 

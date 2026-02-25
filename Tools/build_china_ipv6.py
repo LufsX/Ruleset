@@ -10,9 +10,9 @@ def download_and_process(link, exclude) -> list[str]:
     print(f"[ChinaIPv6] Downloading and processing {link} ...")
     content = requests.get(link).text
     lines = [
-        line
-        for line in content.split("\n")
-        if line and not line.startswith("#") and line.strip() not in exclude
+        processed
+        for line in content.splitlines()  # splitlines 处理换行符更通用
+        if (processed := line.split("#", 1)[0].strip()) and processed not in exclude
     ]
     return lines
 

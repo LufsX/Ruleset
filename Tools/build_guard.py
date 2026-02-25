@@ -7,16 +7,15 @@ from until import run_in_threads
 
 def download_and_process(link, exclude) -> list[str]:
     print(f"[Guard] Downloading and processing {link} ...")
-    content = requests.get(link).text
+
+    # 替换不可见字符表
+    trans_table = str.maketrans({"\u200b": None, "\u200c": None})
+
     lines = []
-    for line in content.split("\n"):
-        # 去除行内注释
-        if "#" in line:
-            line = line.split("#")[0].strip()
-        if line and line.strip() not in exclude:
-            lines.append(line.strip())
-        # 替换不可见字符
-        line = line.replace("\u200b", "").replace("\u200c", "")
+    for line in requests.get(link).text.splitlines():
+        line = line.translate(trans_table).split("#", 1)[0].strip()
+        if line and line not in exclude:
+            lines.append(line)
     return lines
 
 
@@ -24,8 +23,8 @@ def build(guard_sources, out_dir) -> None:
     print("[Guard] Start building from Guard sources…")
 
     update_info = until.make_build_header("Guard List", guard_sources)
-    exclude = {"", "switch.cup.com.cn", ".amazonaws.com"}
-    include = {"msmp.abchina.com.cn"}
+    exclude = ("", "switch.cup.com.cn", ".amazonaws.com")
+    include = ("msmp.abchina.com.cn",)
     all_lines: set[str] = set() if not include else set(include)
 
     def download_and_process_wrapper(link, exclude):

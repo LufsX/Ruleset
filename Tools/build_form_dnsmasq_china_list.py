@@ -12,12 +12,8 @@ def download_and_process(name, link, out_dir) -> None:
 
     update_info = until.make_build_header(f"{name} List", [link])
 
-    pattern = r"^server=/(.*)/114\.114\.114\.114$$"
-    matches = [
-        match
-        for match in re.findall(pattern, content, re.MULTILINE)
-        if not match.startswith("#")
-    ]
+    pattern = re.compile(r"^server=/(.+?)/", re.MULTILINE)
+    matches = pattern.findall(content)
 
     with open(os.path.join(out_dir, f"{name}.conf"), "w", newline="\n") as outfile:
         outfile.write(update_info)
@@ -41,4 +37,5 @@ def build(dnsmasq_china_list, out_dir) -> None:
 
 if __name__ == "__main__":
     import config
+
     build(config.DNSMASQ_CHINA_LIST, config.OUT_SOURCE_RULESET_DIR)
