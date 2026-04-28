@@ -77,7 +77,7 @@
 | 名称 | 用途 |
 | :- | :- |
 | BankHK.conf | 包括常见的香港银行 |
-| BankHK_AirStar.conf | 天星银行 相关 |
+| BankHK_EleBank.conf | ~~天星~~ 象象银行 相关 |
 | BankHK_AntBank.conf | 螞蟻銀行 相关 |
 | BankHK_BOCHK.conf | BOCHK 中銀香港 相关 |
 | BankHK_CNCBI.conf | 中信银行国际 相关 |

@@ -41,7 +41,7 @@ GUARD_SOURCES = [
 ]
 
 BANKHK_SOURCES = [
-    "BankHK_AirStar.conf",
+    "BankHK_EleBank.conf",
     "BankHK_AntBank.conf",
     "BankHK_BOCHK.conf",
     "BankHK_CNCBI.conf",
