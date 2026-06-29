@@ -77,13 +77,14 @@
 | 名称 | 用途 |
 | :- | :- |
 | BankHK.conf | 包括常见的香港银行 |
-| BankHK_EleBank.conf | ~~天星~~ 象象银行 相关 |
 | BankHK_AntBank.conf | 螞蟻銀行 相关 |
 | BankHK_BOCHK.conf | BOCHK 中銀香港 相关 |
 | BankHK_CNCBI.conf | 中信银行国际 相关 |
+| BankHK_EleBank.conf | ~~天星~~ 象象银行 相关 |
 | BankHK_Fusion.conf | Fusion Bank 相关 |
 | BankHK_HSBCHK.conf | HSBC HK 相关 |
 | BankHK_ICBCA.conf | 工银亚洲 相关 |
+| BankHK_NCB.conf | 南洋商業銀行 相关 |
 | BankHK_PAOBank.conf | PAOBank 相关 |
 | BankHK_WeLab.conf | Welab Bank 相关 |
 | BankHK_ZABank.conf | ZA Bank 相关 |

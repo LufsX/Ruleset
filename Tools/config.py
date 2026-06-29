@@ -41,13 +41,14 @@ GUARD_SOURCES = [
 ]
 
 BANKHK_SOURCES = [
-    "BankHK_EleBank.conf",
     "BankHK_AntBank.conf",
     "BankHK_BOCHK.conf",
     "BankHK_CNCBI.conf",
+    "BankHK_EleBank.conf",
     "BankHK_Fusion.conf",
     "BankHK_HSBCHK.conf",
     "BankHK_ICBCA.conf",
+    "BankHK_NCB.conf",
     "BankHK_PAOBank.conf",
     "BankHK_WeLab.conf",
     "BankHK_ZABank.conf",
