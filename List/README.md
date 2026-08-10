@@ -41,7 +41,7 @@
 | 名称 | 用途 |
 |:-|:-|
 | Apple.conf | Apple 相关内容服务|
-| ChatAI.conf | 部分 AI 聊天服务 |
+| AI.conf | 部分 AI 聊天服务 |
 | China.conf | 大陆正常访问的服务 |
 | ChinaApple.conf | Apple 相关 CDN |
 | ChinaIP.conf | 大陆 IPv4 集 |

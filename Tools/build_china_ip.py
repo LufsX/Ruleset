@@ -1,14 +1,13 @@
 import ipaddress
 import os
-import requests
 
+from pipeline import BuildStage, PluginSpec, TaskSpec
 import until
-from until import run_in_threads
 
 
 def download_and_process(link, exclude) -> list[str]:
     print(f"[ChinaIP] Downloading and processing {link} ...")
-    content = requests.get(link).text
+    content = until.fetch_text(link)
     lines = [
         processed
         for line in content.splitlines()  # splitlines 处理换行符更通用
@@ -45,18 +44,15 @@ def build(china_ip_sources, out_dir) -> None:
         "",
     )
 
-    all_lines = set()
-
-    def download_and_process_wrapper(link, exclude) -> None:
-        lines = download_and_process(link, exclude)
-        all_lines.update(lines)
-
     download_functions = [
-        lambda link=link: download_and_process_wrapper(link, exclude)
+        lambda link=link: download_and_process(link, exclude)
         for link in china_ip_sources
     ]
-
-    run_in_threads(download_functions)
+    all_lines = {
+        line
+        for source_lines in until.run_in_threads(download_functions)
+        for line in source_lines
+    }
 
     all_networks = set()
 
@@ -69,12 +65,31 @@ def build(china_ip_sources, out_dir) -> None:
 
     merged_networks = ipaddress.collapse_addresses(all_networks)
 
-    with open(os.path.join(out_dir, "ChinaIP.conf"), "w", newline="\n") as f:
-        f.write(update_info)
-        for network in merged_networks:
-            f.write(f"IP-CIDR,{network}\n")
+    output_path = os.path.join(out_dir, "ChinaIP.conf")
+    output_lines = [f"IP-CIDR,{network}" for network in merged_networks]
+    until.write_lines_with_header(output_path, update_info, output_lines)
 
     print("[ChinaIP] End building from china IP sources")
+
+
+def _run(context) -> None:
+    build(
+        context.config.CHINA_IP_SOURCES,
+        os.fspath(context.paths.source_rules),
+    )
+
+
+PLUGIN = PluginSpec(
+    id="china-ip",
+    tasks=(
+        TaskSpec(
+            id="source.china-ip",
+            stage=BuildStage.SOURCE,
+            action=_run,
+            writes=frozenset({"List/Source/ChinaIP.conf"}),
+        ),
+    ),
+)
 
 
 if __name__ == "__main__":

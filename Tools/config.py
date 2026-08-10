@@ -1,5 +1,5 @@
 import os
-import sys
+from pathlib import Path
 
 """
 配置相关
@@ -8,7 +8,7 @@ import sys
 PROXY_SETTING = os.getenv("PROXY_SETTING", "False").lower() in ("true", "1")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", None)
 
-PROCESS_DIR = os.path.abspath(os.path.dirname(sys.path[0]))
+PROCESS_DIR = os.fspath(Path(__file__).resolve().parent.parent)
 RULESET_DIR = os.path.join(PROCESS_DIR, "List")
 
 OUT_DIR = os.path.join(PROCESS_DIR, "Public")
@@ -58,34 +58,7 @@ BANKHK_SOURCES = [
 文件相关
 """
 
-INIT_DIR_NAME = (
-    os.path.join("List", "Clash"),
-    os.path.join("List", "Source"),
-    os.path.join("List", "Surge"),
-    os.path.join("List", "smartdns"),
-    os.path.join("List", "mihomo"),
-)
-
 COPY_PATH = ("Config", "Mock", "Script", "Module", "vercel.json")
-COPY_SOURCE_PATH = {RULESET_DIR: OUT_SOURCE_RULESET_DIR}
-
-CONFIG_FILE_CLEAR = {
-    os.path.join(OUT_DIR, "Config", "clash.yaml"): os.path.join(
-        OUT_DIR, "Config", "clash-nocomment.yaml"
-    ),
-    os.path.join(OUT_DIR, "Config", "surge.conf"): os.path.join(
-        OUT_DIR, "Config", "surge-nocomment.conf"
-    ),
-    os.path.join(OUT_DIR, "Config", "surge-autotest.conf"): os.path.join(
-        OUT_DIR, "Config", "surge-autotest-nocomment.conf"
-    ),
-    os.path.join(OUT_DIR, "Config", "mihomo.yaml"): os.path.join(
-        OUT_DIR, "Config", "mihomo-nocomment.yaml"
-    ),
-    os.path.join(OUT_DIR, "Config", "mihomo-smart.yaml"): os.path.join(
-        OUT_DIR, "Config", "mihomo-smart-nocomment.yaml"
-    ),
-}
 
 SMARTDNS_FILE = {
     os.path.join(OUT_SOURCE_RULESET_DIR, "Guard.conf"): os.path.join(
@@ -102,16 +75,6 @@ SMARTDNS_FILE = {
     ),
 }
 
-README_FILE = {
-    os.path.join(OUT_SOURCE_RULESET_DIR, "README.md"): os.path.join(
-        OUT_RULESET_DIR, "README.md"
-    ),
-}
-
-COPY_FILE = {
-    os.path.join(PROCESS_DIR, "LICENSE"): os.path.join(OUT_DIR, "LICENSE"),
-}
-
 """
 Web相关
 """
@@ -122,12 +85,20 @@ WEB_RULE_EXTENSIONS = [".conf", ".json", ".txt"]
 处理相关
 """
 
-if PROXY_SETTING:
+def with_proxy(url: str) -> str:
     proxy_prefix = "https://cors.isteed.cc/"
+    if not PROXY_SETTING or url.startswith(proxy_prefix):
+        return url
+    if not url.startswith(("http://", "https://")):
+        raise ValueError(f"Unsupported source URL: {url}")
+    return proxy_prefix + url
+
+
+if PROXY_SETTING:
 
     DNSMASQ_CHINA_LIST = {
-        name: proxy_prefix + link for name, link in DNSMASQ_CHINA_LIST.items()
+        name: with_proxy(link) for name, link in DNSMASQ_CHINA_LIST.items()
     }
-    CHINA_IP_SOURCES = [proxy_prefix + source for source in CHINA_IP_SOURCES]
-    CHINA_IPV6_SOURCES = [proxy_prefix + source for source in CHINA_IPV6_SOURCES]
-    GUARD_SOURCES = [proxy_prefix + source for source in GUARD_SOURCES]
+    CHINA_IP_SOURCES = [with_proxy(source) for source in CHINA_IP_SOURCES]
+    CHINA_IPV6_SOURCES = [with_proxy(source) for source in CHINA_IPV6_SOURCES]
+    GUARD_SOURCES = [with_proxy(source) for source in GUARD_SOURCES]

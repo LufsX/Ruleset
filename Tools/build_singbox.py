@@ -1,6 +1,9 @@
 import glob
 import json
 import os
+from pipeline import BuildStage, PluginSpec, TaskSpec
+import rules
+import until
 
 RULE_TYPE_MAPPING = {
     "DOMAIN": "domain",
@@ -17,28 +20,10 @@ RULE_TYPE_MAPPING = {
 
 
 def is_domainset(file_path) -> bool:
-    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-        for _ in range(10):
-            try:
-                line = f.readline().strip()
-                if not line or line.startswith("#"):
-                    continue
-
-                if "," not in line and ("." in line or line.startswith("this_ruleset")):
-                    return True
-
-                if any(
-                    line.startswith(prefix)
-                    for prefix in ["DOMAIN", "IP-CIDR", "PROCESS"]
-                ):
-                    return False
-            except UnicodeDecodeError:
-                continue
-    return False
+    return rules.is_domainset(rules.read_rules(file_path))
 
 
 def parse_conf_to_singbox(conf_path, output_path) -> bool:
-
     rules_container = {
         "domain": [],
         "domain_suffix": [],
@@ -51,60 +36,35 @@ def parse_conf_to_singbox(conf_path, output_path) -> bool:
         "source_port": [],
     }
 
-    try:
-        if is_domainset(conf_path):
-            print(
-                f"[sing-box] {conf_path} is domainset format, processing as domain_suffix"
-            )
-            with open(conf_path, "r", encoding="utf-8", errors="ignore") as f:
-                for line in f:
-                    line = line.strip()
+    parsed_rules = rules.read_rules(conf_path)
+    if not parsed_rules:
+        raise ValueError(f"No rules were resolved for {conf_path}")
 
-                    if not line or line.startswith("#"):
-                        continue
+    if all(rule.is_plain for rule in parsed_rules):
+        kind = rules.detect_convert_kind(parsed_rules)
+        if kind is None:
+            raise ValueError(f"Mixed plain domain and CIDR entries in {conf_path}")
+        key = "domain_suffix" if kind == "domain" else "ip_cidr"
+        rules_container[key].extend(rule.value for rule in parsed_rules)
+    else:
+        if any(rule.is_plain for rule in parsed_rules):
+            raise ValueError(f"Mixed plain and typed rules in {conf_path}")
+        for rule in parsed_rules:
+            if rule.type not in RULE_TYPE_MAPPING:
+                raise ValueError(f"Unknown rule type {rule.type} in {conf_path}")
+            rules_container[RULE_TYPE_MAPPING[rule.type]].append(rule.value)
 
-                    rules_container["domain_suffix"].append(line)
-        else:
-            with open(conf_path, "r", encoding="utf-8", errors="ignore") as f:
-                for line in f:
-                    line = line.strip()
+    rules_dict = {
+        key: sorted(set(values))
+        for key, values in sorted(rules_container.items())
+        if values
+    }
+    singbox_rules = {"version": 2, "rules": [rules_dict]}
+    serialized = json.dumps(singbox_rules, separators=(",", ":"), ensure_ascii=False)
+    until.write_text_atomic(output_path, serialized)
 
-                    if not line or line.startswith("#"):
-                        continue
-
-                    parts = line.split(",")
-                    if len(parts) < 2:
-                        continue
-
-                    rule_type, value = parts[0], parts[1]
-                    value = value.strip()
-
-                    if rule_type in RULE_TYPE_MAPPING:
-                        sing_box_type = RULE_TYPE_MAPPING[rule_type]
-                        rules_container[sing_box_type].append(value)
-                    else:
-                        print(f"[sing-box] Unknown rule type: {rule_type}")
-
-        rules_dict = {k: sorted(v) for k, v in sorted(rules_container.items()) if v}
-
-        if not rules_dict:
-            print(
-                f"[sing-box] Warning: No rules were resolved for {conf_path}, skipped generation"
-            )
-            return False
-
-        singbox_rules = {"version": 2, "rules": [rules_dict]}
-
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(singbox_rules, f, separators=(",", ":"), ensure_ascii=False)
-
-        print(f"[sing-box] {conf_path} successfully converted to minimized JSON.")
-        return True
-    except Exception as e:
-        print(f"[sing-box] Error processing {conf_path}: {e}")
-        return False
+    print(f"[sing-box] {conf_path} successfully converted to minimized JSON.")
+    return True
 
 
 def get_all_rule_files(dir_path) -> list[str]:
@@ -115,7 +75,7 @@ def get_all_rule_files(dir_path) -> list[str]:
     for ext in extensions:
         rule_files.extend(glob.glob(os.path.join(dir_path, f"*{ext}")))
 
-    return rule_files
+    return sorted(rule_files)
 
 
 def build(ruleset_dir, singbox_dir) -> None:
@@ -130,23 +90,36 @@ def build(ruleset_dir, singbox_dir) -> None:
     print(f"[sing-box] Found {len(rule_files)} rule files, starting conversion...")
 
     success_count = 0
-    skip_count = 0
-
     for rule_file in rule_files:
 
         file_name = os.path.basename(rule_file)
 
         output_file = os.path.join(singbox_dir, file_name.rsplit(".", 1)[0] + ".json")
 
-        result = parse_conf_to_singbox(rule_file, output_file)
-        if result:
-            success_count += 1
-        else:
-            skip_count += 1
+        parse_conf_to_singbox(rule_file, output_file)
+        success_count += 1
 
-    print(
-        f"[sing-box] Conversion completed: {success_count} succeeded, {skip_count} skiped."
+    print(f"[sing-box] Conversion completed: {success_count} succeeded.")
+
+
+def _run(context) -> None:
+    build(
+        os.fspath(context.paths.source_rules),
+        os.fspath(context.paths.singbox_rules),
     )
+
+
+PLUGIN = PluginSpec(
+    id="singbox",
+    tasks=(
+        TaskSpec(
+            id="format.singbox",
+            stage=BuildStage.FORMAT,
+            action=_run,
+            writes=frozenset({"List/sing-box/*"}),
+        ),
+    ),
+)
 
 
 if __name__ == "__main__":

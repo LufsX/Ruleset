@@ -1,6 +1,16 @@
 import concurrent.futures
 import datetime
-import re
+import os
+import tempfile
+import time
+from collections.abc import Callable, Iterable
+from typing import TypeVar
+
+import requests
+
+
+T = TypeVar("T")
+HTTP_TIMEOUT = (10, 60)
 
 
 def now_cn_iso8601() -> str:
@@ -62,37 +72,84 @@ def write_lines_with_header(
 ) -> None:
     if sort_lines:
         lines = sorted(lines)
-    with open(out_path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(header)
-        f.write("\n".join(lines))
-        f.write("\n")
+    content = header + "\n".join(lines) + "\n"
+    write_text_atomic(out_path, content)
 
 
-def prepend_text_to_file_binary(path: str, text: str) -> None:
-    prefix = text.encode("utf-8")
-    with open(path, "rb") as f:
-        content = f.read()
-    with open(path, "wb") as f:
-        f.write(prefix)
-        f.write(content)
+def write_text_atomic(path: str, content: str) -> None:
+    """Write a UTF-8 text file and replace the destination atomically."""
+    directory = os.path.dirname(os.path.abspath(path))
+    os.makedirs(directory, exist_ok=True)
+    temp_path = ""
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            newline="\n",
+            dir=directory,
+            delete=False,
+        ) as temp_file:
+            temp_file.write(content)
+            temp_path = temp_file.name
+        os.replace(temp_path, path)
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            os.remove(temp_path)
+
+
+def fetch_text(url: str, *, timeout=HTTP_TIMEOUT, retries: int = 3) -> str:
+    return _request_text(
+        lambda: requests.get(url, timeout=timeout), retries=retries
+    )
+
+
+def post_json_text(
+    url: str,
+    *,
+    headers: dict[str, str],
+    payload: dict[str, str],
+    timeout=HTTP_TIMEOUT,
+    retries: int = 3,
+) -> str:
+    return _request_text(
+        lambda: requests.post(
+            url,
+            headers=headers,
+            json=payload,
+            timeout=timeout,
+        ),
+        retries=retries,
+    )
+
+
+def _request_text(request: Callable[[], requests.Response], *, retries: int) -> str:
+    if retries < 1:
+        raise ValueError("retries must be at least 1")
+
+    for attempt in range(retries):
+        try:
+            response = request()
+            response.raise_for_status()
+            return response.text
+        except requests.RequestException:
+            if attempt == retries - 1:
+                raise
+            time.sleep(0.5 * (2**attempt))
+
+    raise AssertionError("unreachable")
 
 
 def clear_comment(src_file, dest_file) -> None:
     with open(src_file, "r", encoding="utf-8") as src:
         lines = src.readlines()
 
-    cleaned_lines = []
-    for line in lines:
-        match = re.match(r"^[^#]*", line)
-        if match:
-            cleaned_lines.append(match.group(0).rstrip() + "\n")
-        else:
-            cleaned_lines.append("\n")
+    cleaned_lines = [
+        cleaned
+        for line in lines
+        if (cleaned := _strip_inline_comment(line)).strip()
+    ]
 
-    cleaned_lines = [line for line in cleaned_lines if line.strip()]
-
-    with open(dest_file, "w", encoding="utf-8", newline="\n") as dest:
-        dest.writelines(filter(None, cleaned_lines))
+    write_text_atomic(dest_file, "".join(cleaned_lines))
 
     print(f"[Util] Clearing comments for {src_file}")
 
@@ -113,15 +170,42 @@ def deduplicate(src_file, dest_file) -> None:
                 if stripped_line != "":
                     lines_seen.add(stripped_line)
 
-    with open(dest_file, "w", encoding="utf-8", newline="\n") as file:
-        file.writelines(output_lines)
+    write_text_atomic(dest_file, "".join(output_lines))
 
     print(f"[Util] Deduplication for {src_file}")
 
 
-def run_in_threads(functions) -> None:
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        executor.map(lambda f: f(), functions)
+def _strip_inline_comment(line: str) -> str:
+    quote: str | None = None
+    escaped = False
+    for index, character in enumerate(line):
+        if escaped:
+            escaped = False
+            continue
+        if character == "\\" and quote == '"':
+            escaped = True
+            continue
+        if character in ("'", '"'):
+            quote = None if quote == character else character if quote is None else quote
+            continue
+        if character == "#" and quote is None and (
+            index == 0 or line[index - 1].isspace()
+        ):
+            return line[:index].rstrip() + "\n"
+    return line.rstrip() + "\n"
+
+
+def run_in_threads(
+    functions: Iterable[Callable[[], T]], *, max_workers: int | None = None
+) -> list[T]:
+    """Run callables concurrently, preserving result order and propagating errors."""
+    tasks = list(functions)
+    if not tasks:
+        return []
+    worker_count = max_workers or min(8, len(tasks))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=worker_count) as executor:
+        futures = [executor.submit(function) for function in tasks]
+        return [future.result() for future in futures]
 
 
 if __name__ == "__main__":

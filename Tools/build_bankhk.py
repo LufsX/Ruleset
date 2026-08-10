@@ -1,5 +1,6 @@
 import os
 
+from pipeline import BuildStage, PluginSpec, TaskSpec
 import until
 
 
@@ -32,12 +33,31 @@ def build(bankhk_sources, ruleset_dir, out_ruleset_dir) -> None:
 
     # 写入合并后的文件
     output_path = os.path.join(out_ruleset_dir, "BankHK.conf")
-    with open(output_path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(update_info)
-        f.write("\n".join(all_rules))
+    until.write_lines_with_header(output_path, update_info, all_rules)
 
     print(f"[BankHK] Successfully built BankHK.conf with {len(all_rules)} rules")
     print("[BankHK] End building BankHK rules")
+
+
+def _run(context) -> None:
+    build(
+        context.config.BANKHK_SOURCES,
+        os.fspath(context.paths.project_dir / "List"),
+        os.fspath(context.paths.source_rules),
+    )
+
+
+PLUGIN = PluginSpec(
+    id="bankhk",
+    tasks=(
+        TaskSpec(
+            id="source.bankhk",
+            stage=BuildStage.SOURCE,
+            action=_run,
+            writes=frozenset({"List/Source/BankHK.conf"}),
+        ),
+    ),
+)
 
 
 if __name__ == "__main__":

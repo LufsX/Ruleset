@@ -1,6 +1,11 @@
 
 .DS_Store
-.env
-Public
 __pycache__
 cache*
+
+.omc
+AGENTS.md
+
+.env
+
+Public

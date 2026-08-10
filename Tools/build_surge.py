@@ -1,4 +1,5 @@
 import os
+from pipeline import BuildStage, PluginSpec, TaskSpec
 import until
 
 
@@ -6,11 +7,10 @@ def build(out_ruleset_dir, out_surge_ruleset_dir) -> None:
     print("[Surge] Start copying surge rules...")
 
     # 确保目标目录存在
-    if not os.path.exists(out_surge_ruleset_dir):
-        os.makedirs(out_surge_ruleset_dir)
+    os.makedirs(out_surge_ruleset_dir, exist_ok=True)
 
     # 获取所有 .conf 文件
-    conf_files = [f for f in os.listdir(out_ruleset_dir) if f.endswith(".conf")]
+    conf_files = sorted(f for f in os.listdir(out_ruleset_dir) if f.endswith(".conf"))
     processed_count = 0
 
     # 处理文件
@@ -19,25 +19,13 @@ def build(out_ruleset_dir, out_surge_ruleset_dir) -> None:
         dest_file = os.path.join(out_surge_ruleset_dir, filename)
 
         # 读取源文件内容
-        with open(source_file, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-
-        # 过滤掉注释行并获取非空行
-        content_lines = [
-            line.strip()
-            for line in lines
-            if line.strip() and not line.strip().startswith("#")
-        ]
+        content_lines = until.read_clean_lines(source_file)
 
         rule_name = filename.replace(".conf", "")
         update_info = until.make_ruleset_header(rule_name)
 
         # 写入目标文件
-        with open(dest_file, "w", encoding="utf-8", newline="\n") as f:
-            f.write(update_info)
-            # content_lines.sort()
-            f.write("\n".join(content_lines))
-            f.write("\n")
+        until.write_lines_with_header(dest_file, update_info, content_lines)
 
         processed_count += 1
         print(f"[Surge] Processed {filename} to Surge ruleset directory")
@@ -46,6 +34,26 @@ def build(out_ruleset_dir, out_surge_ruleset_dir) -> None:
         f"[Surge] Completed: {processed_count} files processed to Surge ruleset directory"
     )
     print("[Surge] End processing surge rules")
+
+
+def _run(context) -> None:
+    build(
+        os.fspath(context.paths.source_rules),
+        os.fspath(context.paths.surge_rules),
+    )
+
+
+PLUGIN = PluginSpec(
+    id="surge",
+    tasks=(
+        TaskSpec(
+            id="format.surge",
+            stage=BuildStage.FORMAT,
+            action=_run,
+            writes=frozenset({"List/Surge/*"}),
+        ),
+    ),
+)
 
 
 if __name__ == "__main__":

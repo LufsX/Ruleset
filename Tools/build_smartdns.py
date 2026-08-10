@@ -1,14 +1,11 @@
 import os
+from pipeline import BuildStage, PluginSpec, TaskSpec
+import rules
 import until
 
 
-def build(smartdns_files, ruleset_dir) -> None:
+def build(smartdns_files) -> None:
     print("[SmartDNS] Start building smartdns rules...")
-
-    # 确保目标目录存在
-    smartdns_dir = os.path.join(ruleset_dir)
-    if not os.path.exists(smartdns_dir):
-        os.makedirs(smartdns_dir)
 
     processed_count = 0
 
@@ -31,22 +28,15 @@ def build(smartdns_files, ruleset_dir) -> None:
         )
 
         # 获取非注释内容
-        content_lines = []
-        for line in lines:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                if line.startswith("."):
-                    line = line.replace(".", "", 1)
-                content_lines.append(line)
-
-        # 排序内容
-        content_lines.sort()
+        parsed_rules = rules.parse_rule_lines(lines)
+        if not rules.is_domainset(parsed_rules):
+            raise ValueError(f"SmartDNS source must be a plain domainset: {input_file}")
+        content_lines = sorted(
+            {rule.value.removeprefix(".") for rule in parsed_rules}
+        )
 
         # 写入目标文件
-        with open(output_file, "w", encoding="utf-8", newline="\n") as f:
-            f.write(update_info)
-            f.write("\n".join(content_lines))
-            f.write("\n")
+        until.write_lines_with_header(output_file, update_info, content_lines)
 
         processed_count += 1
 
@@ -54,7 +44,30 @@ def build(smartdns_files, ruleset_dir) -> None:
     print("[SmartDNS] End building smartdns rules")
 
 
+def _run(context) -> None:
+    smartdns_files = {
+        os.fspath(context.paths.source_rules / f"{name}.conf"): os.fspath(
+            context.paths.smartdns_rules / f"{name}.txt"
+        )
+        for name in ("Guard", "ChinaApple", "ChinaDomain", "ChinaGoogle")
+    }
+    build(smartdns_files)
+
+
+PLUGIN = PluginSpec(
+    id="smartdns",
+    tasks=(
+        TaskSpec(
+            id="format.smartdns",
+            stage=BuildStage.FORMAT,
+            action=_run,
+            writes=frozenset({"List/smartdns/*"}),
+        ),
+    ),
+)
+
+
 if __name__ == "__main__":
     import config
 
-    build(config.DNSMASQ_CHINA_LIST, config.OUT_SOURCE_RULESET_DIR)
+    build(config.SMARTDNS_FILE)
